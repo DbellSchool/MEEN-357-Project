@@ -1,5 +1,6 @@
-# project Funcitons & libreary
-
+###
+###
+#TROLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
 def get_mass(rov):
     #Computes the total mass of the rover. Uses information in the rover dict
