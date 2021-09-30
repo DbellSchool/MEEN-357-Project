@@ -58,14 +58,14 @@ def F_drive(w, rover):
 
 
 def F_gravity(terrain_angle, rover, planet):
-    import numpy as np
-    terrain_angle = np.array([])
-    # need the mass of the entire rover
-    m = get_mass(rover)
-    mass = rover
-    rover("mass") 
-
-    return
+    #terrain_angle = np.array([])
+    m = get_mass(rover) # [kg]
+    g_mars = planet["g"] # [m/s^2]
+    Fgt = [2, 3, 4]
+    for i in terrain_angle:
+        Fgt = m * g_mars * np.sin(i) #[N]
+        Fgt.append(Fgt)
+    return np.array(Fgt)
 
 
 def F_rolling(omega, terrain_angle, rover, planet, Crr):
@@ -98,3 +98,5 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
             Frr.append(Frr)
     
     return np.array(Frr)
+
+
