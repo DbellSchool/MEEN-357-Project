@@ -117,4 +117,33 @@ def F_net(w, terrain_angle, rover, planet, Crr):
     Fn = (F3 + f1_f2)
     return np.array(Fn)
     
+# Analysis of DC Motor
+
+# graphs_motor.py 
+
+# DAVID, do not know how to use the already defined functions in the graphs 
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Create a python script that outputs a graph of the DC motor
+# doesn't display anything to the console
+# plots the following three graphs in a 3x1 array using matplot.lib
+# graph 1 : motor shaft speed vs. motor shaft torque (x-axis = torque)
+# graph 2: motor power vs. motor shaft torque (x-axis = torque)
+# graph 3: motor power vs. motor shaft speed (x-axis = speed)
+# label the axes of the graphs
+# use the functions we created to generate the graphs
+
+
+
+fig, (ax1, ax2, ax3) = plt.subplots(3)
+# motor shaft speed(w) is input by the user
+
+
+x1 = np.linspace(0, )
+y1 = 
+
+fig.subtitle ("graphs_motor.py")
+ax1.plot(x1,y1)
 
