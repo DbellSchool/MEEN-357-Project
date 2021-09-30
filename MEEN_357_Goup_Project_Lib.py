@@ -99,4 +99,22 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     return np.array(Frr)
 
+# DAVID I NEED YOUR HELP ON THE FUNCTION BELOW 
+# (thank you)
+
+# Finding the net force on the rover
+def F_net(w, terrain_angle, rover, planet, Crr):
+   #w = 
+    #terrain_angle = 
+    F1 = F_drive(w, rover)
+    F2 = F_gravity(terrain_angle, rover, planet)
+    f1_f2 = []
+    for i in F1:
+        for j in F2:
+            f1_f2.append(j+i)
+            
+    F3 = F_rolling(w, terrain_angle, rover, planet, Crr)
+    Fn = (F3 + f1_f2)
+    return np.array(Fn)
+    
 
