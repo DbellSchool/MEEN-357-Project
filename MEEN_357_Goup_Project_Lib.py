@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 def get_mass(rov):
     #Computes the total mass of the rover. Uses information in the rover dict
@@ -39,6 +40,22 @@ def tau_dcmotor(w,Motor = {"torque_stall": 170, "torque_noload": 0, "speed_noloa
 
     return t
 
+def F_drive(w, rover):
+    #given motor shaft speeds from tau_motor, returns a vector of the same size consisting of the corresponding forces
+    
+    
+    gear_ratio = get_gear_ratio()
+   
+    radius = rover['wheel_assembly']['wheel']['radius']
+    t = tau_dcmotor(w,motor)
+    Fd = []
+    for i in t:
+        Fd = (i / radius)*6
+        Fd.append(Fd)
+    print('Fd =', Fd)
+    
+    return Fd
+
 
 def F_gravity(terrain_angle, rover, planet):
     import numpy as np
@@ -49,3 +66,35 @@ def F_gravity(terrain_angle, rover, planet):
     rover("mass") 
 
     return
+
+
+def F_rolling(omega, terrain_angle, rover, planet, Crr):
+    #solving for velocity of rover
+    radius = rover['wheel_assembly']['wheel']['radius']
+    v_rover = []
+    for i in w:
+        v_rover = radius * i
+        v_rover.append(v_rover)
+        
+    #solving for Constant force (Frr)
+    g = planet['g']
+    r_mass = get_mass(rover)
+    Fn = []
+    for i in terrain_angle:
+        Fn = r_mass * g * (math.cos(i))
+        Fn.append(Fn)
+    
+    Frr_simp = []
+    Crr = 1 #i dont know where we get crr from... user input??
+    for i in Fn:
+        Frr_simp = Crr * i
+        Frr_simp.append(Frr_simp)
+    
+    #solving for Frr
+    Frr = []
+    for i in v_rover, Frr_simp:
+        for j in Frr_simp:
+            Frr = erf*(40 * i) *j
+            Frr.append(Frr)
+    
+    return np.array(Frr)
