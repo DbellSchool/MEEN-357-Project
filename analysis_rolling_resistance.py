@@ -13,8 +13,14 @@ import matplotlib.pyplot as plt
 
 theda = 0 # angle of incline 
 Crr_array = numpy.linspace(0.01,0.4,25)
+from scipy.optimize import fsolve
 
 w = Crr_array*2
+
+F_rolling(omega, terrain_angle, rover, planet, Crr):
+
+fsolve(f,0)
+
 
 plt.plot(w,Crr_array, '-b')
 

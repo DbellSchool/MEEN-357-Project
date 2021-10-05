@@ -4,7 +4,7 @@
 #   •Crr_array= numpy.linspace(0.01,0.4,25);
 # 
 # 2.Generate an arrayof terrain angles using the following line of code: 
-#   •slope_array_deg = numpy.linspace(-10,35,25);
+#   •sl         ope_array_deg = numpy.linspace(-10,35,25);
 # 
 # 3.Surface plotting functionsoftenrequires matrix inputs. Two of these matrices define values for the independent variables (coefficient of rolling resistance and slope). 
 #   The other matrix contains therover speed data. To generate the two matrices of independent variable data, use the following line of code:
@@ -19,3 +19,38 @@
 # 6.Once you complete the double loop, you can call the surface plotting command as follows. Make sure to add axis labels and a descriptive title. Choose an appropriate view for the surface plotin your script.
 #   •figure = matplotlib.pyplot.figure()
 #   •ax = Axes3D(figure, elev= N1, azim = N2)# where N1 and N2 will control the 3D view•ax.plot_surface(CRR,SLOPE, VMAX)As with the other analysis scripts:Do not display anything to the console.
+from MEEN_357_Goup_Project_Lib import F_rolling
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
+
+
+Crr=  np.linspace(0.01,0.4,25)  #25 long
+slope_deg = np.linspace(-10,35,25) #25 Long
+
+for i in range(len(Crr_array)):
+    for j in range(len(slope_array_deg)):
+        Crr_s = float(CRR[i,j])
+        slope_s = float(slope_deg[i,j])
+
+        # Finds V Max
+
+        VMAX = temp
+
+N1 = 1
+N2 = 1
+figure = matplotlib.pyplot.figure()
+ax = Axes3D(figure, elev= N1, azim = N2)# where N1 and N2 will control the 3D view
+ax.plot_surface(Crr,slope_deg, VMAX)
+
+    #print(Crr_array[i])
+
+    #for j in range:
+
+        
+
+
+
+CRR,SLOPE= np.meshgrid(Crr_array, slope_array_deg)
+VMAX= np.zeros(np.shape(CRR),dtype = float)

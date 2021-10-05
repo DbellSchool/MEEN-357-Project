@@ -122,29 +122,30 @@ def F_net(w, terrain_angle, rover, planet, Crr):
 # graphs_motor.py 
 
 # DAVID, do not know how to use the already defined functions in the graphs 
-    # to call funiotn -> Funciton Name then needed paramiders => Name(c,y,z) <= depending on num of paramiders
+    # to call funiotn -> Funciton Name then needed paramiders => Name(c,y,z) <= depending on num of var
+def func():
 
-import matplotlib.pyplot as plt
-import numpy as np
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-# Create a python script that outputs a graph of the DC motor
-# doesn't display anything to the console
-# plots the following three graphs in a 3x1 array using matplot.lib
-# graph 1 : motor shaft speed vs. motor shaft torque (x-axis = torque)
-# graph 2: motor power vs. motor shaft torque (x-axis = torque)
-# graph 3: motor power vs. motor shaft speed (x-axis = speed)
-# label the axes of the graphs
-# use the functions we created to generate the graphs
-
-
-
-fig, (ax1, ax2, ax3) = plt.subplots(3)
-# motor shaft speed(w) is input by the user
+    # Create a python script that outputs a graph of the DC motor
+    # doesn't display anything to the console
+    # plots the following three graphs in a 3x1 array using matplot.lib
+    # graph 1 : motor shaft speed vs. motor shaft torque (x-axis = torque)
+    # graph 2: motor power vs. motor shaft torque (x-axis = torque)
+    # graph 3: motor power vs. motor shaft speed (x-axis = speed)
+    # label the axes of the graphs
+    # use the functions we created to generate the graphs
 
 
-x1 = np.linspace(0, )
-y1 = 
 
-fig.subtitle ("graphs_motor.py")
-ax1.plot(x1,y1)
+    fig, (ax1, ax2, ax3) = plt.subplots(3)
+    # motor shaft speed(w) is input by the user
+
+
+    x1 = np.linspace(0, )
+    y1 = 1
+
+    fig.subtitle ("graphs_motor.py")
+    ax1.plot(x1,y1)
 
