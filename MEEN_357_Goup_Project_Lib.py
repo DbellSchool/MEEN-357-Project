@@ -122,6 +122,7 @@ def F_net(w, terrain_angle, rover, planet, Crr):
 # graphs_motor.py 
 
 # DAVID, do not know how to use the already defined functions in the graphs 
+    # to call funiotn -> Funciton Name then needed paramiders => Name(c,y,z) <= depending on num of paramiders
 
 import matplotlib.pyplot as plt
 import numpy as np
