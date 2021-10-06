@@ -11,7 +11,7 @@
 import numpy # for formatting
 import matplotlib.pyplot as plt # for plotting
 from MEEN_357_Goup_Project_Lib import F_net, rover,planet, F_rolling # getsing funciton and constants
-from scipy.optimize import fsolve # for finsing zero 
+from scipy.optimize import root_scalar # for finsing zero 
 
 #rom analysis_combined_terrain import Crr
 
@@ -34,10 +34,15 @@ def fix(x):
 def FuncWrap(x):
     
 
-    return F_net( x, 0, rover, planet, 0.01)
+    return F_net( x, [0], rover, planet, [0.01])
+
+L =-100
+R = 100
+
+val = root_scalar(FuncWrap,method='bisect', bracket=[L,R])
+print("w is : ", val)
 
 
-F_net( [1], [0], rover, planet, [0.01])
 
 #F_rolling([1],[0], rover, planet, [0.1])
 

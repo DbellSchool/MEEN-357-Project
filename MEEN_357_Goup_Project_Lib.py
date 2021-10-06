@@ -33,11 +33,19 @@ def tau_dcmotor(w,Motor = {"torque_stall": 170, "torque_noload": 0, "speed_noloa
     #Returns the motor shaft torque when given motor shaft speed and a dictionary containing important specifications for the motor. 
 
     t =[]
-    for i in w:
+    try:
+
+        for i in w:
+            Ts = Motor["torque_stall"]
+            TN = Motor["torque_noload"]
+            wN = Motor["speed_noload"]
+            T = Ts - ((Ts-TN)/wN)*i # equaiton on sheet five
+            t.append(T)
+    except:
         Ts = Motor["torque_stall"]
         TN = Motor["torque_noload"]
         wN = Motor["speed_noload"]
-        T = Ts - ((Ts-TN)/wN)*i # equaiton on sheet five
+        T = Ts - ((Ts-TN)/wN)*w # equaiton on sheet five
         t.append(T)
     
 
@@ -48,8 +56,25 @@ def tau_dcmotor(w,Motor = {"torque_stall": 170, "torque_noload": 0, "speed_noloa
 def F_drive(w, rover):
     #given motor shaft speeds from tau_motor, returns a vector of the same size consisting of the corresponding forces
     
+    dic = rover['wheel_assembly']['speed_reducer']
     
-    gear_ratio = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+
+    d1= dic["diam_pinion"]
+    d2 = dic["diam_gear"]
+    Ng = (d2/d1)**2
+    #print("rover['wheel_assembly']['speed_reducer']")
+    wS = []
+
+    try:
+        for i in w:
+            wS.append(i/Ng)
+    except:
+       #print(type(w), type(Ng))
+        var = w/Ng
+        wS.append(var)
+        
+
+
    
     
     radius = rover['wheel_assembly']['wheel']['radius']
@@ -60,7 +85,7 @@ def F_drive(w, rover):
     for i in t:
         F = (i / radius)*6
         Fd.append(F)
-    print('Fd =', Fd)
+    
     
     return Fd
 
@@ -80,8 +105,13 @@ def F_rolling(w, terrain_angle, rover, planet, Crr):
     #solving for velocity of rover
     radius = rover['wheel_assembly']['wheel']['radius']
     v_rover = []
-    for i in w:
-        v_r = radius * i
+    try:
+        for i in w:
+            v_r = radius * i
+            v_rover.append(v_r)
+
+    except:
+        v_r = radius * w
         v_rover.append(v_r)
         
     #solving for Constant force (Frr)
@@ -93,9 +123,9 @@ def F_rolling(w, terrain_angle, rover, planet, Crr):
         Fn.append(F)
     
     Frr_simp = []
-    Crr = 1 #i dont know where we get crr from... user input??
+ 
     for i in Fn:
-        Frr = Crr * i
+        Frr = Crr[0] * i
         Frr_simp.append(Frr)
     
     #solving for Frr
@@ -115,14 +145,20 @@ def F_net(w, terrain_angle, rover, planet, Crr):
 
     F1 = F_drive(w, rover)
     F2 = F_gravity(terrain_angle, rover, planet)
-    f1_f2 = []
-    for i in F1:
-        for j in F2:
-            f1_f2.append(j+i)
-            
     F3 = F_rolling(w, terrain_angle, rover, planet, Crr)
-    Fn = (F3 + f1_f2)
-    return np.array(Fn)
+    Fnet = []
+    for i in range(len(F1)):
+        F_net = F1[i] - F2[i] - F3[i]
+        Fnet.append(F_net)
+    # f1_f2 = []
+    # for i in F1:
+    #     for j in F2:
+    #         f1_f2.append(j+i)
+            
+    
+    #Fn = (F3 + f1_f2)
+    #print('Fn =', Fnet)
+    return np.array(Fnet)
 #################################################################
 
 ###################
