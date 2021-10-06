@@ -6,53 +6,47 @@
 # •Generate rolling resistance coefficients to test with the following line of code: oCrr_array = numpy.linspace(0.01,0.4,25);
 # •Store the maximum velocity [m/s] at each angle in a vector called v_max.
 # •Plot v_maxversus Crr_array. Make sure to label the axes and indicate their units.
-# •Do not display anything to the console•The hints for the previous problem apply here as well.
+# •Do not display anything to the console•The  for the previous problem apply here as well.
 #
-import numpy
-import matplotlib.pyplot as plt
+import numpy # for formatting
+import matplotlib.pyplot as plt # for plotting
+from MEEN_357_Goup_Project_Lib import F_net, rover,planet # getsing funciton and constants
+from scipy.optimize import fsolve # for finsing zero 
 
-theda = 0 # angle of incline 
-Crr_array = numpy.linspace(0.01,0.4,25)
-from scipy.optimize import fsolve
+#rom analysis_combined_terrain import Crr
 
-w = Crr_array*2
+terrain_angle = 0 # angle of incline 
+CRR = numpy.linspace(0.01,0.4,25)
 
-F_rolling(omega, terrain_angle, rover, planet, Crr):
-
-fsolve(f,0)
+#for i in range(len(CRR)):
+#F_net( 1, terrain_angle, rover, planet, CRR[1])
 
 
-plt.plot(w,Crr_array, '-b')
+#fsolve (F_net( 'null', terrain_angle, rover, planet, CRR[1]),0)
 
-plt.xlabel("omega [rad/s]")
-plt.ylabel("CRR")
-plt.grid("on")
-#plt.xlim(0,5)
-plt.show()
 
-#############Graphing with SubplotsL
-# import matplotlib.pyplot as plt
-#     print("Starting Task 3")
-#     N = 20
+def temp(x,n):
+    return n+3*x
 
-#     x1 = linspace(-5,5,num = N)
-#     y1 = 0.5 *x1**2
+def fix(x):
+    return temp(x,12)
 
-#     x2 = linspace(0,100,num = N)
-#     y2 = -x2
+def FuncWrap(x):
+    
 
-#     fig, (ax1, ax2) = plt.subplots(2)
-#     fig.tight_layout(pad=3)
-#     fig.suptitle('Task 3')
+    return F_net( x, 0, rover, planet, 0.01)
 
-#     ax1.plot(x1, y1)
-#     ax1.set_title("Exhibit 1")
-#     ax1.set_xlabel("x")
-#     ax1.set_ylabel("y")
 
-#     ax2.plot(x2, y2)
-#     ax2.set_title("Exhibit 2")
-#     ax2.set_xlabel("Work")
-#     ax2.set_ylabel("Play")
-#     plt.show()
+F_net( [1], [0], rover, planet, [0.01])
 
+#w = fsolve(FuncWrap,3)
+
+#print(w)
+
+#plt.plot(w,CRR, '-b')
+
+# plt.xlabel("omega [rad/s]")
+# plt.ylabel("CRR")
+# plt.grid("on")
+# #plt.xlim(0,5)
+# plt.show()

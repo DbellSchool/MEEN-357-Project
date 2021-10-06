@@ -29,9 +29,9 @@ from scipy.optimize import fsolve
 Crr=  np.linspace(0.01,0.4,25)  #25 long
 slope_deg = np.linspace(-10,35,25) #25 Long
 
-for i in range(len(Crr_array)):
-    for j in range(len(slope_array_deg)):
-        Crr_s = float(CRR[i,j])
+for i in range(len(Crr)):
+    for j in range(len(slope_deg)):
+        Crr_s = float(Crr[i,j])
         slope_s = float(slope_deg[i,j])
 
         # Finds V Max

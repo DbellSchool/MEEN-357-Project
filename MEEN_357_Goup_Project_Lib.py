@@ -1,6 +1,11 @@
 import numpy as np
 import math
-# test
+
+#############
+##Functions##
+#############
+
+##########################################
 def get_mass(rov):
     #Computes the total mass of the rover. Uses information in the rover dict
 
@@ -44,14 +49,17 @@ def F_drive(w, rover):
     #given motor shaft speeds from tau_motor, returns a vector of the same size consisting of the corresponding forces
     
     
-    gear_ratio = get_gear_ratio()
+    gear_ratio = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
    
+    
     radius = rover['wheel_assembly']['wheel']['radius']
-    t = tau_dcmotor(w,motor)
+    #motor = rover['wheel_assembly']['motor'] # [David Changed] Is this ok ? --> check chang at group meeting
+    #t = tau_dcmotor(w,motor)
+    t = tau_dcmotor(w)
     Fd = []
     for i in t:
-        Fd = (i / radius)*6
-        Fd.append(Fd)
+        F = (i / radius)*6
+        Fd.append(F)
     print('Fd =', Fd)
     
     return Fd
@@ -61,41 +69,41 @@ def F_gravity(terrain_angle, rover, planet):
     #terrain_angle = np.array([])
     m = get_mass(rover) # [kg]
     g_mars = planet["g"] # [m/s^2]
-    Fgt = [2, 3, 4]
+    Fgt = []#[2, 3, 4]
     for i in terrain_angle:
-        Fgt = m * g_mars * np.sin(i) #[N]
-        Fgt.append(Fgt)
+        Fg = m * g_mars * np.sin(i) #[N]
+        Fgt.append(Fg)
     return np.array(Fgt)
 
 
-def F_rolling(omega, terrain_angle, rover, planet, Crr):
+def F_rolling(w, terrain_angle, rover, planet, Crr):
     #solving for velocity of rover
     radius = rover['wheel_assembly']['wheel']['radius']
     v_rover = []
     for i in w:
-        v_rover = radius * i
-        v_rover.append(v_rover)
+        v_r = radius * i
+        v_rover.append(v_r)
         
     #solving for Constant force (Frr)
     g = planet['g']
     r_mass = get_mass(rover)
     Fn = []
     for i in terrain_angle:
-        Fn = r_mass * g * (math.cos(i))
-        Fn.append(Fn)
+        F = r_mass * g * (math.cos(i))
+        Fn.append(F)
     
     Frr_simp = []
     Crr = 1 #i dont know where we get crr from... user input??
     for i in Fn:
-        Frr_simp = Crr * i
-        Frr_simp.append(Frr_simp)
+        Frr = Crr * i
+        Frr_simp.append(Frr)
     
     #solving for Frr
     Frr = []
     for i in v_rover, Frr_simp:
         for j in Frr_simp:
-            Frr = erf*(40 * i) *j
-            Frr.append(Frr)
+            Fr = math.erf*(40 * i) *j ###### What is going on here ??
+            Frr.append(Fr)
     
     return np.array(Frr)
 
@@ -104,8 +112,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
 
 # Finding the net force on the rover
 def F_net(w, terrain_angle, rover, planet, Crr):
-   #w = 
-    #terrain_angle = 
+
     F1 = F_drive(w, rover)
     F2 = F_gravity(terrain_angle, rover, planet)
     f1_f2 = []
@@ -116,7 +123,31 @@ def F_net(w, terrain_angle, rover, planet, Crr):
     F3 = F_rolling(w, terrain_angle, rover, planet, Crr)
     Fn = (F3 + f1_f2)
     return np.array(Fn)
-    
+#################################################################
+
+###################
+# Main Dictionary #
+###################
+
+
+wheel = {"radius":0.3, "mass": 1.0 }  #Radius in [m]  one drive wheel [kg]
+speed_reducer = {"type": "reverted", "diam_pinion": 0.04 ,"diam_gear":0.07, "mass":1.5} # diam in [m] mass in [kg]
+motor = {"torque_stall": 170, "torque_noload": 0, "speed_noload": 3.80, "mass": 5.0} #torque [N*m] speed [rad/s] mass [kg]
+
+
+chassis = {"mass": 659} #kg
+science_payload = {"mass":75 } #kg
+power_subsys = {"mass": 90} #kg
+planet = {"g":3.72} #m/s^2
+
+
+wheel_assembly = {"wheel": wheel, "speed_reducer": speed_reducer, "motor": motor}
+rover = {"wheel_assembly": wheel_assembly,"chassis":chassis, "science_payload":science_payload,"power_subsys":power_subsys }
+
+#####################################
+
+
+
 # Analysis of DC Motor
 
 # graphs_motor.py 
@@ -149,3 +180,5 @@ def func():
     fig.subtitle ("graphs_motor.py")
     ax1.plot(x1,y1)
 
+
+#print(rover['wheel_assembly']['motor'])
