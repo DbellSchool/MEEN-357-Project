@@ -10,46 +10,30 @@
 #
 import numpy # for formatting
 import matplotlib.pyplot as plt # for plotting
-from MEEN_357_Goup_Project_Lib import F_net, rover,planet, speed_reducer # getsing funciton and constants
+from MEEN_357_Goup_Project_Lib import F_net, rover,planet, get_gear_ratio # getsing funciton and constants
 from scipy.optimize import root_scalar # for finsing zero 
 
-#rom analysis_combined_terrain import Crr
 
 terrain_angle = 0 # angle of incline 
 CRR = numpy.linspace(0.01,0.4,25)
 
-#for i in range(len(CRR)):
-#F_net( 1, terrain_angle, rover, planet, CRR[1])
-
-
-#fsolve (F_net( 'null', terrain_angle, rover, planet, CRR[1]),0)
-
-
-def FuncWrap(x):
-    
-
-    return F_net( x, [0], rover, planet, [0.01])
-
 L =-100
 R = 100
 
-w = root_scalar(FuncWrap,method='bisect', bracket=[L,R])
+Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+r =rover['wheel_assembly']['wheel']['radius']
+VMAX = []
+for i in range(len(CRR)):
+    Fwrap = lambda x: F_net( x, [0], rover, planet, [CRR[i]])
+    w = root_scalar(Fwrap,method='bisect', bracket=[L,R])
+    wWheel = w.root/Ng
+    V = wWheel*r
+    VMAX.append(V)
 
-speed_reducer(w,rover)
-print("w is : ", w)
 
-
-
-#F_rolling([1],[0], rover, planet, [0.1])
-
-#w = fsolve(FuncWrap,3)
-
-#print(w)
-
-#plt.plot(w,CRR, '-b')
-
-# plt.xlabel("omega [rad/s]")
-# plt.ylabel("CRR")
-# plt.grid("on")
-# #plt.xlim(0,5)
-# plt.show()
+# graph data
+plt.plot(VMAX,CRR, '-b')
+plt.xlabel("omega [rad/s]")
+plt.ylabel("CRR")
+plt.grid("on")
+plt.show()

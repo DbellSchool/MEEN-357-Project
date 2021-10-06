@@ -19,38 +19,45 @@
 # 6.Once you complete the double loop, you can call the surface plotting command as follows. Make sure to add axis labels and a descriptive title. Choose an appropriate view for the surface plotin your script.
 #   •figure = matplotlib.pyplot.figure()
 #   •ax = Axes3D(figure, elev= N1, azim = N2)# where N1 and N2 will control the 3D view•ax.plot_surface(CRR,SLOPE, VMAX)As with the other analysis scripts:Do not display anything to the console.
-from MEEN_357_Goup_Project_Lib import F_rolling
+from MEEN_357_Goup_Project_Lib import  F_net, rover,planet, get_gear_ratio, rover
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
+from scipy.optimize import root_scalar
+from mpl_toolkits.mplot3d import Axes3D
 
 
 Crr=  np.linspace(0.01,0.4,25)  #25 long
 slope_deg = np.linspace(-10,35,25) #25 Long
 
-for i in range(len(Crr)):
-    for j in range(len(slope_deg)):
-        Crr_s = float(Crr[i,j])
-        slope_s = float(slope_deg[i,j])
+CRR_grid, Deg_grid = np.meshgrid(Crr,slope_deg)
+grid = np.zeros(np.shape(CRR_grid),dtype=float)
+N=25
 
-        # Finds V Max
+L =-100
+R = 100
 
-        VMAX = temp
+Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+r =rover['wheel_assembly']['wheel']['radius']
 
-N1 = 1
-N2 = 1
-figure = matplotlib.pyplot.figure()
+
+for i in range(N):
+    for j in range(N):
+        Fwrap = lambda x: F_net( x, [Deg_grid[i,j]], rover, planet, [Deg_grid[i,j]])
+        w = root_scalar(Fwrap,method='bisect', bracket=[L,R])
+        wWheel = w.root/Ng
+        V = wWheel*r
+        grid[i,j] = V
+
+N1 = 45
+N2 = 45
+figure = plt.figure()
 ax = Axes3D(figure, elev= N1, azim = N2)# where N1 and N2 will control the 3D view
-ax.plot_surface(Crr,slope_deg, VMAX)
+ax.plot_surface(CRR_grid,Deg_grid, grid)
+ax.set_xlabel("Crr")
+ax.set_ylabel("Degree")
+ax.set_zlabel("VMAX")
 
-    #print(Crr_array[i])
-
-    #for j in range:
-
-        
-
+plt.show()
 
 
-CRR,SLOPE= np.meshgrid(Crr_array, slope_array_deg)
-VMAX= np.zeros(np.shape(CRR),dtype = float)
