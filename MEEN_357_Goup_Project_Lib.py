@@ -71,7 +71,7 @@ def F_gravity(terrain_angle, rover, planet):
     g_mars = planet["g"] # [m/s^2]
     Fgt = []#[2, 3, 4]
     for i in terrain_angle:
-        Fg = m * g_mars * np.sin(i) #[N]
+        Fg = m * g_mars * np.sin(i) #[N]  # does this need to be negetive ??
         Fgt.append(Fg)
     return np.array(Fgt)
 
