@@ -102,7 +102,7 @@ def F_rolling(w, terrain_angle, rover, planet, Crr):
     Frr = []
     for i in v_rover, Frr_simp:
         for j in Frr_simp:
-            Fr = math.erf*(40 * i) *j ###### What is going on here ??
+            Fr = math.erf(40 * i[0]) *j ###### What is going on here ??
             Frr.append(Fr)
     
     return np.array(Frr)

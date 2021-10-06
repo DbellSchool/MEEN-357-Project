@@ -10,7 +10,7 @@
 #
 import numpy # for formatting
 import matplotlib.pyplot as plt # for plotting
-from MEEN_357_Goup_Project_Lib import F_net, rover,planet # getsing funciton and constants
+from MEEN_357_Goup_Project_Lib import F_net, rover,planet, F_rolling # getsing funciton and constants
 from scipy.optimize import fsolve # for finsing zero 
 
 #rom analysis_combined_terrain import Crr
@@ -38,6 +38,8 @@ def FuncWrap(x):
 
 
 F_net( [1], [0], rover, planet, [0.01])
+
+#F_rolling([1],[0], rover, planet, [0.1])
 
 #w = fsolve(FuncWrap,3)
 
