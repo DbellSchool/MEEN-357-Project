@@ -16,24 +16,23 @@ from MEEN_357_Goup_Project_Lib import tau_dcmotor, get_gear_ratio, wheel_assembl
 # call Ng from previous function and dictionary
 Ng = get_gear_ratio(wheel_assembly['speed_reducer'])
 
-fig, (ax1, ax2, ax3) = plt.subplots(3)
-fig.tight_layout()
+fig, (ax1, ax2, ax3) = plt.subplots(3) # sets up fig
+fig.tight_layout() #changes lay out to make neet
 
-# graph 1 - speed reducer torque vs. speed
+# Graph 1 - speed reducer torque vs. speed
 t_sr = []
-x1_sr = np.linspace(0, 3.8, 25)
-print(x1_sr)
+x1_sr = np.linspace(0, 3.8, 25) # list of 25 numbers form 0-3.8
+
 for i in range(len(x1_sr)):
     t_sr.append(tau_dcmotor(x1_sr[i]/Ng))
 ax1.plot(t_sr, x1_sr)
+
 ax1.set_xlabel("SR torque [Nm]") # SR refers to the speed reducer output shaft
 ax1.set_ylabel("SR speed [rad/s]")
 
 
-# graph 2 - speed reducer torque vs. power
-#print(t_sr)
+# Graph 2 - speed reducer torque vs. power
 
-#TRIAL 2 - same wonky graphs
 P_sr = []
 for i in range(len(x1_sr)):
     #pass
@@ -43,32 +42,9 @@ ax2.plot(t_sr, P_sr)
 ax2.set_xlabel("SR torque [Nm]")
 ax2.set_ylabel("SR power [W]")
 
-
-    
-
-
-
-
-
-# graph 3 - speed reducer speed vs. power
+#Graph 3 - speed reducer speed vs. power
 ax3.plot(x1_sr, P_sr)
 ax3.set_xlabel("SR speed [rad/s]")
 ax3.set_ylabel("SR power [W]")
 
 plt.show()
-
-
-
-
-
-
-
-
-#Ng = get_gear_ratio(x1_sr)
-
-#x1_sr = np.linspace(0, 3.8, 25)/Ng
-
-#t_sr = tau_dcmotor(x1_sr)
-#ax1.plot(t_sr, x1_sr)
-
-
