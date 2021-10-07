@@ -43,7 +43,7 @@ r =rover['wheel_assembly']['wheel']['radius']
 
 for i in range(N):
     for j in range(N):
-        Fwrap = lambda x: F_net( x, [Deg_grid[i,j]], rover, planet, [Deg_grid[i,j]])
+        Fwrap = lambda x: F_net( x, [Deg_grid[i,j]], rover, planet, [CRR_grid[i,j]])
         w = root_scalar(Fwrap,method='bisect', bracket=[L,R])
         wWheel = w.root/Ng
         V = wWheel*r

@@ -96,8 +96,8 @@ def F_gravity(terrain_angle, rover, planet):
     g_mars = planet["g"] # [m/s^2]
     Fgt = []#[2, 3, 4]
     for i in terrain_angle:
-        Fg = m * g_mars * np.sin(i) #[N]  # does this need to be negetive ??
-        Fgt.append(Fg)
+        Fg = m * g_mars * np.sin(i*math.pi/180) #[N]  # does this need to be negetive ??
+        Fgt.append(-Fg)
     return np.array(Fgt)
 
 
@@ -119,7 +119,7 @@ def F_rolling(w, terrain_angle, rover, planet, Crr):
     r_mass = get_mass(rover)
     Fn = []
     for i in terrain_angle:
-        F = r_mass * g * (math.cos(i))
+        F = r_mass * g * (math.cos(i*math.pi/180))
         Fn.append(F)
     
     Frr_simp = []
@@ -130,10 +130,10 @@ def F_rolling(w, terrain_angle, rover, planet, Crr):
     
     #solving for Frr
     Frr = []
-    for i in v_rover, Frr_simp:
+    for i in v_rover:
         for j in Frr_simp:
-            Fr = math.erf(40 * i[0]) *j ###### What is going on here ??
-            Frr.append(Fr)
+            Fr = math.erf(40 * i) *j ###### What is going on here ??
+            Frr.append(-Fr)
     
     return np.array(Frr)
 
@@ -148,7 +148,7 @@ def F_net(w, terrain_angle, rover, planet, Crr):
     F3 = F_rolling(w, terrain_angle, rover, planet, Crr)
     Fnet = []
     for i in range(len(F1)):
-        F_net = F1[i] - F2[i] - F3[i]
+        F_net = F1[i] + F2[i] + F3[i]
         Fnet.append(F_net)
     # f1_f2 = []
     # for i in F1:
