@@ -4,6 +4,7 @@ from numpy import sign
 import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import root_scalar
+from subfunctions import rover, F_net, get_gear_ratio, planet
 
 
 

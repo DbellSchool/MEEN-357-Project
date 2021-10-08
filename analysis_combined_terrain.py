@@ -19,7 +19,7 @@
 # 6.Once you complete the double loop, you can call the surface plotting command as follows. Make sure to add axis labels and a descriptive title. Choose an appropriate view for the surface plotin your script.
 #   •figure = matplotlib.pyplot.figure()
 #   •ax = Axes3D(figure, elev= N1, azim = N2)# where N1 and N2 will control the 3D view•ax.plot_surface(CRR,SLOPE, VMAX)As with the other analysis scripts:Do not display anything to the console.
-from MEEN_357_Goup_Project_Lib import  F_net, rover,planet, get_gear_ratio, rover
+from subfunctions import  F_net, rover,planet, get_gear_ratio, rover
 
 import numpy as np
 import matplotlib.pyplot as plt

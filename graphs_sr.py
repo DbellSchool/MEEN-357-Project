@@ -11,7 +11,7 @@ Created on Wed Oct  6 22:24:05 2021
 
 import matplotlib.pyplot as plt
 import numpy as np
-from MEEN_357_Goup_Project_Lib import tau_dcmotor, get_gear_ratio, wheel_assembly
+from subfunctions import tau_dcmotor, get_gear_ratio, wheel_assembly
 
 # call Ng from previous function and dictionary
 Ng = get_gear_ratio(wheel_assembly['speed_reducer'])

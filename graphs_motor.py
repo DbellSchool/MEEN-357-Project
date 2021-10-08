@@ -9,7 +9,7 @@ Created on Wed Sep 29 12:47:17 2021
 
 import matplotlib.pyplot as plt
 import numpy as np
-from MEEN_357_Goup_Project_Lib import tau_dcmotor
+from subfunctions import tau_dcmotor
 
 
 # Create a python script that outputs a graph of the DC motor

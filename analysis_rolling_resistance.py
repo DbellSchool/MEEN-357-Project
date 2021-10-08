@@ -10,7 +10,7 @@
 #
 import numpy # for formatting
 import matplotlib.pyplot as plt # for plotting
-from MEEN_357_Goup_Project_Lib import F_net, rover,planet, get_gear_ratio # getsing funciton and constants
+from subfunctions import F_net, rover,planet, get_gear_ratio # getsing funciton and constants
 from scipy.optimize import root_scalar # for finsing zero 
 
 
