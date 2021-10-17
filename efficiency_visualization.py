@@ -1,9 +1,16 @@
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+from Project_Phase_1_Codes.define_rovers import define_rover_4
 
-effcy_tau = np.array([0,10,20,40,75,165])
-effcy = np.array([0,0.6,0.75,0.73,0.55,0.05])
+
+rover = define_rover_4()[0]
+print(rover)
+
+effcy_tau = rover['wheel_assembly']['motor']['effcy_tau']
+effcy = rover['wheel_assembly']['motor']['effcy']
+#effcy_tau = np.array([0,10,20,40,75,165])
+#effcy = np.array([0,0.6,0.75,0.73,0.55,0.05])
 
 
 alpha_f = interp1d(effcy_tau,effcy, kind = 'cubic', fill_value = 'extrapolate')
