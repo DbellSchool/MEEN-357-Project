@@ -35,3 +35,5 @@ v_max = r*omega_output
 plt.plot(Crr_list, v_max)
 plt.xlabel('Coefficient of Rolling Resistance [-]')
 plt.ylabel('Max Rover Speed [m/s]')
+
+plt.show()

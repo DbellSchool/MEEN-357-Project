@@ -43,3 +43,5 @@ plt.subplot(3,1,3)
 plt.plot(omega, P)
 plt.xlabel('Motor Shaft Speed [rad/s]')
 plt.ylabel('Motor Power [W]')
+
+plt.show()

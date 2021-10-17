@@ -61,3 +61,5 @@ ax.plot_surface(Crr_mat, slope_mat, v_max)
 ax.set_xlabel('Coefficient of Rolling Resistance [-]')
 ax.set_ylabel('Terrain Angle [deg]')
 ax.set_zlabel('Max Rover Speed [m/s]')
+
+plt.show()

@@ -37,3 +37,5 @@ v_max = r*omega_output
 plt.plot(slope_list_deg, v_max)
 plt.xlabel('Terrain Angle [deg]')
 plt.ylabel('Max Rover Speed [m/s]')
+
+plt.show()
