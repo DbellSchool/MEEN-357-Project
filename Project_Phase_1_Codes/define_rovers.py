@@ -107,7 +107,7 @@ def define_rover_4():
     # Initialize Rover dict for testing
     wheel = {'radius':0.30,
              'mass':2} 
-    speed_reducer = {'type':'standard',
+    speed_reducer = {'type':'reverted',
                      'diam_pinion':0.04,
                      'diam_gear':0.06,
                      'mass':1.5}
