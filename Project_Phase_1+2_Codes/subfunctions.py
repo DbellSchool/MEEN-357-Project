@@ -8,6 +8,7 @@
 import math
 import numpy as np
 from numpy.core.defchararray import array
+from define_experiment import experiment1 
 
 def get_mass(rover):
     """
@@ -321,9 +322,9 @@ def motorW(omega, rover):
     #This function should be “vectorized” such that if given a vector of rover velocities
     # it returns a vector the same size containing the corresponding motor speeds. 
 
-    if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)):
-        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
-    elif not isinstance(omega, np.ndarray):
+    #if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)):
+    #    raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    if not isinstance(omega, np.ndarray):
         omega = np.array([omega],dtype=float) # make the scalar a numpy array
     elif len(np.shape(omega)) != 1:
         raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
@@ -348,24 +349,12 @@ def motorW(omega, rover):
             # Is this an ok interprestaiton ^
     return w
     
-    
-######## rover_dynamics()
-
-
-t0 = 0.0 #initial time [s]
-te = 5000 #final time [s]
-Crr = experiment['Crr']
-y = [[rover['telementry']['velocity']], [rover['telementry']['position']]] #2D velocity/position array
-y1 = y[0] #v
-y2 = y[1] #x
-terrain_angle = alpha_fun(y[1]) 
-
 
 def alpha_fun(y):
-    define_experiment()
+    experiment = experiment1()[0]
     alpha_dist = experiment['alpha_dist']
     alpha_deg = experiment['alpha_deg']
-    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value=’extrapolate’) # fit the cubic spline
+    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value= "extrapolate") # fit the cubic spline
 
     return alpha_fun 
 
@@ -373,8 +362,9 @@ def alpha_fun(y):
 
 def rover_dynamics(t, y, rover, planet, experiment):
     t = 1 #s  #time sample
-    Fnet = Fnet(w, terrain_angle, rover, planet, Crr)
-    m = get_mass(rov)
+    w = motorW(y[0],rover)
+    Fnet = F_net(w, terrain_angle, rover, planet, Crr)
+    m = get_mass(rover)
     
     dy1dt = Fnet / m
     dy2dt = y1
@@ -384,25 +374,48 @@ def rover_dynamics(t, y, rover, planet, experiment):
 
 
 
-fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment)
-
-tspan = (t0, te)
-
-sol = solve_ivp(fun, tspan, y0, method= 'RK45')   
-
     
     
-    
-
-    
+#############
+# Test Code #
+#############
+from scipy.interpolate import interp1d
+from scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
+from define_experiment import experiment1
+#from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
+
+t0 = 0.0 #initial time [s]
+te = 5000 #final time [s]
+experiment = experiment1()[0]
+Crr = experiment['Crr']
+planet = experiment1()[1]
+y0 = experiment1()[0]['initial_conditions']
 rover = define_rover_4()[0]
 
-v = np.array([0.2,0.0001])
-print(motorW(v, rover))
 
-from scipy.interpolate import interp1d
-from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
+V = np.array([1,0]) #get from experment rover['telementry']['velocity']
+X = np.array([0,2]) # get form experm rover['telementry']['position']
+y = np.array([V,X])
+#y = [[rover['telementry']['velocity']], [rover['telementry']['position']]] #2D velocity/position array
+y1 = y[0] #v
+y2 = y[1] #x
+terrain_angle = alpha_fun(y[1])  
+print(type(y[0]))
+fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment)
+tspan = np.array([t0, te])
+print(type(fun),type(y0))
+sol = solve_ivp(fun, tspan, y0, method= 'RK45') 
+    # 
+    # 
+    #   
+# from define_rovers import define_rover_4
+# rover = define_rover_4()[0]
+
+# v = np.array([0.2,0.0001])
+# print(motorW(v, rover))
+
+
 
 
 
