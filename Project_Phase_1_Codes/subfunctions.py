@@ -349,9 +349,63 @@ def motorW(omega, rover):
     return w
     
     
+######## rover_dynamics()
+
+
+t0 = 0.0 #initial time [s]
+te = 5000 #final time [s]
+Crr = experiment['Crr']
+y = [[rover['telementry']['velocity']], [rover['telementry']['position']]] #2D velocity/position array
+y1 = y[0] #v
+y2 = y[1] #x
+terrain_angle = alpha_fun(y[1]) 
+
+
+def alpha_fun(y):
+    define_experiment()
+    alpha_dist = experiment['alpha_dist']
+    alpha_deg = experiment['alpha_deg']
+    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value=’extrapolate’) # fit the cubic spline
+
+    return alpha_fun 
+
+
+
+def rover_dynamics(t, y, rover, planet, experiment):
+    t = 1 #s  #time sample
+    Fnet = Fnet(w, terrain_angle, rover, planet, Crr)
+    m = get_mass(rov)
+    
+    dy1dt = Fnet / m
+    dy2dt = y1
+    dydt = np.array([dy1dt, dy2dt])
+    return dydt
+    
+
+
+
+fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment)
+
+tspan = (t0, te)
+
+sol = solve_ivp(fun, tspan, y0, method= 'RK45')   
+
+    
+    
+    
+
     
 from define_rovers import define_rover_4
 rover = define_rover_4()[0]
 
 v = np.array([0.2,0.0001])
 print(motorW(v, rover))
+
+from scipy.interpolate import interp1d
+from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
+
+
+
+
+
+
