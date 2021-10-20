@@ -13,6 +13,7 @@ effcy = rover['wheel_assembly']['motor']['effcy']
 #effcy = np.array([0,0.6,0.75,0.73,0.55,0.05])
 
 
+
 alpha_f = interp1d(effcy_tau,effcy, kind = 'cubic', fill_value = 'extrapolate')
 
 x = np.linspace(0,100,50)
