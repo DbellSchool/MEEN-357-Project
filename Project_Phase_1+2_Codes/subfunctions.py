@@ -395,8 +395,8 @@ rover = define_rover_4()[0]
 
 
 V = np.array([1,0]) #get from experment rover['telementry']['velocity']
-X = np.array([0,2]) # get form experm rover['telementry']['position']
-y = np.array([V,X])
+X = np.array([0,2]) #get form experm rover['telementry']['position']
+y = np.array([V,X]) 
 #y = [[rover['telementry']['velocity']], [rover['telementry']['position']]] #2D velocity/position array
 y1 = y[0] #v
 y2 = y[1] #x
