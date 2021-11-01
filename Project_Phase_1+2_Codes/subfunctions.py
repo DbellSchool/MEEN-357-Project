@@ -9,6 +9,8 @@ import math
 import numpy as np
 from numpy.core.defchararray import array
 from define_experiment import experiment1 
+from  scipy.integrate import solve_ivp
+from define_rovers import define_rover_4
 
 def get_mass(rover):    
 # Check that the input is a dict
@@ -421,6 +423,7 @@ from end_of_mission_event import end_of_mission_event
 import numpy as np
 #from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
 
+#def rover_dynamics(t,y,rover,planet,experiment, end_event):
 
 experiment = experiment1()[0]
 t0 = experiment['time_range'][0] #initial time [s]
@@ -450,4 +453,46 @@ events = end_of_mission_event(end_event)
 
 
 sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
-print(sol)
+#print(sol)
+
+def simulate_rover(rover,planet,experiment,end_event):
+    #t0 = experiment['time_range'][0] #initial time [s]
+    #te = experiment['time_range'][1] #final time [s]
+    y0 = experiment1()[0]['initial_conditions']
+    
+    speed_reducer = rover['wheel_assembly']['speed_reducer']
+
+    fun = lambda t, y: rover_dynamics(t, y0, rover, planet, experiment)
+    tspan = experiment['time_range'] #[initial time [s], #final time [s]]
+    events = end_of_mission_event(end_event)
+
+    sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
+        
+     
+    #T=sol.t # time arrarW
+    #print(y)
+    #X = sol.y[0,:]
+    
+    #V = sol.y[0,:]
+    #tel =  {'telemetry': sol}
+
+    
+    tel =  {'velocity': [1,23,4],'position' : [12,43,1] }
+
+    telementry = {'telementry': tel}
+
+
+    rover.update(telementry)
+
+    return rover
+
+#rover = experiment1()
+
+experiment = experiment1()[0]
+end_event = experiment1()[1]
+rover = define_rover_4()[0]
+planet = define_rover_4()[1]
+
+sim = simulate_rover(rover,planet,experiment,end_event)
+
+print(sim)
