@@ -1,11 +1,11 @@
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
-from Project_Phase_1_Codes.define_rovers import define_rover_4
+from define_rovers import define_rover_4
 
 
 rover = define_rover_4()[0]
-print(rover)
+#print(rover)
 
 effcy_tau = rover['wheel_assembly']['motor']['effcy_tau']
 effcy = rover['wheel_assembly']['motor']['effcy']

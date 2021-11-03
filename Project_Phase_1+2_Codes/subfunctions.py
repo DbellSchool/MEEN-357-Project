@@ -353,9 +353,9 @@ def motorW(omega, rover):
     # 
     #This function should be “vectorized” such that if given a vector of rover velocities
     # it returns a vector the same size containing the corresponding motor speeds. 
-
-    #if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)):
-    #    raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    #print(type(omega))
+    if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)) and (not isinstance(omega, np.float64)):
+        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
     if not isinstance(omega, np.ndarray):
         omega = np.array([omega],dtype=float) # make the scalar a numpy array
     elif len(np.shape(omega)) != 1:
@@ -442,7 +442,6 @@ def rover_dynamics(t, y, rover, planet, experiment):
     return dydt
 
 
-
 def simulate_rover(rover,planet,experiment,end_event):
 
     y0 = experiment['initial_conditions'] # initla conditions provided by experament
@@ -450,19 +449,19 @@ def simulate_rover(rover,planet,experiment,end_event):
     fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment) # formats function to be used in IVP solver
     
     tspan = experiment['time_range'] #[initial time [s], #final time [s]]
-    events = end_of_mission_event(end_event)
+    events = end_of_mission_event(end_event) # ceates end events that solver uses
 
-    sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
+    sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events) # solves, but exit if event condisitons are
 
-    #T=sol.t # time vector
+    T=sol.t # time vector
     X = sol.y[0,:] # displacement solution vector
     V = sol.y[1,:] # velocity soution vector
     
     # sets up and adds to dicitonary
-    tel =  {'velocity': V,'position' : X}
+    tel =  {'velocity': V,'position' : X,'time':T }
     telementry = {'telementry': tel}
 
-    rover.update(telementry)
+    rover.update(telementry) # adds new dic to rover
 
     return rover  
 
@@ -518,20 +517,12 @@ sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
 #Test For RoverSIM#
 ###################
 
+'''
+# test code for rover sim
 experiment = experiment1()[0]
 end_event = experiment1()[1]
 rover = define_rover_4()[0]
 planet = define_rover_4()[1]
 
-#sim = simulate_rover(rover,planet,experiment,end_event)
-#
-#print(sim['telementry'])
-#print("\n X is : \n",sim['telementry']['position'])
-#print("\n V is :\n",sim['telementry']['velocity'])
-
-#print("\n rover is :\n",sim)
-
-
-###################
-#Test For RoverSIM#
-###################
+sim = simulate_rover(rover,planet,experiment,end_event)
+'''
