@@ -444,6 +444,17 @@ def rover_dynamics(t, y, rover, planet, experiment):
 
 def simulate_rover(rover,planet,experiment,end_event):
 
+
+    #### Check if all inputs are dic
+    if type(rover) != dict:
+        raise Exception('input One must be a dict')
+    elif type(planet) != dict:
+        raise Exception('input Two must be a dict')
+    elif type(experiment) != dict:
+        raise Exception('input Three must be a dict')
+    elif type(end_event) != dict:
+        raise Exception('input Four must be a dict')
+
     y0 = experiment['initial_conditions'] # initla conditions provided by experament
 
     fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment) # formats function to be used in IVP solver
@@ -453,7 +464,7 @@ def simulate_rover(rover,planet,experiment,end_event):
 
     sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events) # solves, but exit if event condisitons are
 
-    T=sol.t # time vector
+    T = sol.t # time vector
     X = sol.y[0,:] # displacement solution vector
     V = sol.y[1,:] # velocity soution vector
     

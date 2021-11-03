@@ -3,7 +3,6 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 from define_rovers import define_rover_4
 
-
 rover = define_rover_4()[0]
 #print(rover)
 
