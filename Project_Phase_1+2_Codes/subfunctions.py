@@ -312,6 +312,40 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     return Fnet
 
 
+def end_of_mission_event(end_event):
+    """
+    Defines an event that terminates the mission simulation. Mission is over
+    when rover reaches a certain distance, has moved for a maximum simulation 
+    time or has reached a minimum velocity.            
+    """
+    
+    mission_distance = end_event['max_distance']
+    mission_max_time = end_event['max_time']
+    mission_min_velocity = end_event['min_velocity']
+    
+    # Assume that y[1] is the distance traveled
+    distance_left = lambda t,y: mission_distance - y[1]
+    distance_left.terminal = True
+    
+    time_left = lambda t,y: mission_max_time - t
+    time_left.terminal = True
+    time_left.direction = -1
+    
+    velocity_threshold = lambda t,y: y[0] - mission_min_velocity
+    velocity_threshold.terminal = True
+    
+    # terminal indicates whether any of the conditions can lead to the
+    # termination of the ODE solver. In this case all conditions can terminate
+    # the simulation independently.
+    
+    # direction indicates whether the direction along which the different
+    # conditions is reached matter or does not matter. In this case, only
+    # the direction in which the velocity treshold is arrived at matters
+    # (negative)
+    
+    events = [distance_left, time_left, velocity_threshold]
+    
+    return events
 
 def motorW(omega, rover):
     #Compute the rotational speed of the motor shaft [rad/s]
@@ -367,9 +401,9 @@ def rover_dynamics(t, y, rover, planet, experiment):
     #print(len(t))
     #print("this is a numpy floatS",not(isinstance(t,np.float64)))
     
-    
-    
-    
+    #if (> y[0] or end_of_mission_event(end_event)>y[1]):
+    #print(end_of_mission_event(end_event))
+    #print(y[0],y[1],"|") #end_of_mission_event(end_event)[1])
     #ASK PROFESSOR
     # if (type(t) != isinstance(t,float) and not(isinstance(t,np.float64)) and not(0.0)):
     #     #raise Exception('First input must be a scalar')
@@ -406,15 +440,39 @@ def rover_dynamics(t, y, rover, planet, experiment):
     dy2dt = Fnet / m
     dydt = np.array([dy2dt, dy1dt], dtype=object)
     return dydt
+
+
+
+def simulate_rover(rover,planet,experiment,end_event):
+
+    y0 = experiment['initial_conditions'] # initla conditions provided by experament
+
+    fun = lambda t, y: rover_dynamics(t, y, rover, planet, experiment) # formats function to be used in IVP solver
     
+    tspan = experiment['time_range'] #[initial time [s], #final time [s]]
+    events = end_of_mission_event(end_event)
+
+    sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
+
+    #T=sol.t # time vector
+    X = sol.y[0,:] # displacement solution vector
+    V = sol.y[1,:] # velocity soution vector
+    
+    # sets up and adds to dicitonary
+    tel =  {'velocity': V,'position' : X}
+    telementry = {'telementry': tel}
+
+    rover.update(telementry)
+
+    return rover  
 
 
 
     
     
-#############
-# Test Code #
-#############
+#######################
+# Test Rover Dynamics #
+#######################
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
@@ -455,44 +513,25 @@ events = end_of_mission_event(end_event)
 sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
 #print(sol)
 
-def simulate_rover(rover,planet,experiment,end_event):
-    #t0 = experiment['time_range'][0] #initial time [s]
-    #te = experiment['time_range'][1] #final time [s]
-    y0 = experiment1()[0]['initial_conditions']
-    
-    speed_reducer = rover['wheel_assembly']['speed_reducer']
 
-    fun = lambda t, y: rover_dynamics(t, y0, rover, planet, experiment)
-    tspan = experiment['time_range'] #[initial time [s], #final time [s]]
-    events = end_of_mission_event(end_event)
-
-    sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
-        
-     
-    #T=sol.t # time arrarW
-    #print(y)
-    #X = sol.y[0,:]
-    
-    #V = sol.y[0,:]
-    #tel =  {'telemetry': sol}
-
-    
-    tel =  {'velocity': [1,23,4],'position' : [12,43,1] }
-
-    telementry = {'telementry': tel}
-
-
-    rover.update(telementry)
-
-    return rover
-
-#rover = experiment1()
+###################
+#Test For RoverSIM#
+###################
 
 experiment = experiment1()[0]
 end_event = experiment1()[1]
 rover = define_rover_4()[0]
 planet = define_rover_4()[1]
 
-sim = simulate_rover(rover,planet,experiment,end_event)
+#sim = simulate_rover(rover,planet,experiment,end_event)
+#
+#print(sim['telementry'])
+#print("\n X is : \n",sim['telementry']['position'])
+#print("\n V is :\n",sim['telementry']['velocity'])
 
-print(sim)
+#print("\n rover is :\n",sim)
+
+
+###################
+#Test For RoverSIM#
+###################
