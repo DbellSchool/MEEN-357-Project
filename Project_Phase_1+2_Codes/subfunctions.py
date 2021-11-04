@@ -424,7 +424,10 @@ def rover_dynamics(t, y, rover, planet, experiment):
         
     if type(experiment) != dict:
         raise Exception('Fifth input mustt be a dict')
-    
+
+        
+ 
+        
     
     alpha_dist = experiment['alpha_dist']
     alpha_deg = experiment['alpha_deg']
@@ -440,6 +443,29 @@ def rover_dynamics(t, y, rover, planet, experiment):
     dy2dt = Fnet / m
     dydt = np.array([dy2dt, dy1dt], dtype=object)
     return dydt
+
+
+def mechpower(v, rover):
+    if type(rover) != dict:
+        raise Exception('Second input must be a dict')
+    if (type(v) != int) and (type(v) != float) and (not isinstance(v, np.ndarray)):
+        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    
+    w = motorW(v, rover)
+    tau = tau_dcmotor(w, rover)
+    #compute power = w*tau
+    P = []
+    if len(w) != 1:
+        for i in range(len(w)):
+            Pwr = np.array(w[i]*tau[i])
+            print('POWER=', Pwr)
+            P.append(Pwr) 
+        else:
+            P = w*tau
+            
+    print('P=',P) 
+    return np.array(P)
+
 
 
 def simulate_rover(rover,planet,experiment,end_event):
@@ -465,8 +491,8 @@ def simulate_rover(rover,planet,experiment,end_event):
     sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events) # solves, but exit if event condisitons are
 
     T = sol.t # time vector
-    X = sol.y[0,:] # displacement solution vector
-    V = sol.y[1,:] # velocity soution vector
+    X = sol.y[1,:] # displacement solution vector
+    V = sol.y[0,:] # velocity soution vector
     
     # sets up and adds to dicitonary
     tel =  {'velocity': V,'position' : X,'time':T }
@@ -474,7 +500,7 @@ def simulate_rover(rover,planet,experiment,end_event):
 
     rover.update(telementry) # adds new dic to rover
 
-    return rover  
+    return rover 
 
 
 
