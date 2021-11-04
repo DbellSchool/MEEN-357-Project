@@ -1,4 +1,3 @@
-import subfunctions as sb
 from define_rovers import define_rover_4
 from define_experiment import experiment1
 import matplotlib.pyplot as plt
@@ -22,8 +21,8 @@ sim = sb.simulate_rover(rover,planet,experiment,end_event)
 t = sim['telementry']['time']
 x = sim['telementry']['position']
 v = sim['telementry']['velocity']
-#p = sb.mechpower(v,rover)
-p = v
+p = sb.mechpower(v,rover)
+
 
 f, axs = plt.subplots(3,1,figsize=(10,10))
 
