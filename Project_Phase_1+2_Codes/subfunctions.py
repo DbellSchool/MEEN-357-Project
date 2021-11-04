@@ -452,18 +452,19 @@ def mechpower(v, rover):
         raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
     
     w = motorW(v, rover)
-    tau = tau_dcmotor(w, rover)
+    motor  = rover['wheel_assembly']['motor']
+    tau = tau_dcmotor(w, motor)
     #compute power = w*tau
     P = []
     if len(w) != 1:
         for i in range(len(w)):
             Pwr = np.array(w[i]*tau[i])
-            print('POWER=', Pwr)
+            #print('POWER=', Pwr)
             P.append(Pwr) 
         else:
             P = w*tau
             
-    print('P=',P) 
+    #print('P=',P) 
     return np.array(P)
 
 

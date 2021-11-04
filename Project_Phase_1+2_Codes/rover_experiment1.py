@@ -1,7 +1,7 @@
 from define_rovers import define_rover_4
 from define_experiment import experiment1
 import matplotlib.pyplot as plt
-
+import subfunctions as sb
 experiment = experiment1()[0]
 end_event = experiment1()[1]
 
@@ -18,10 +18,12 @@ planet = define_rover_4()[1]
 
 sim = sb.simulate_rover(rover,planet,experiment,end_event)
 
+
 t = sim['telementry']['time']
 x = sim['telementry']['position']
 v = sim['telementry']['velocity']
 p = sb.mechpower(v,rover)
+#p = v
 
 
 f, axs = plt.subplots(3,1,figsize=(10,10))
@@ -42,3 +44,19 @@ plt.xlabel('time [s]')
 plt.ylabel('Motor Power [W]')
 
 plt.show()
+
+
+# preforms leftanded reiman sum for andwin queoisnt in part 8
+j = 0 
+for i in range (len(t)-1):
+    j = j +(t[i+1]-t[i])*p[i]
+print('total jules used = ',j)
+
+
+print("Final Table:\n")
+print("completion_time:",t[-1]) # last index
+print("distance_traveled:",v[-1]-v[0])
+print( "max_velocity:",max(v))
+print( "average_velocity:",sum(v)/len(v))
+print("battery_energy:",j)
+print("batt_energy_per_distance:",j/(x[-1]-x[0]))
