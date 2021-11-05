@@ -468,6 +468,11 @@ def mechpower(v, rover):
     return np.array(P)
 
 ### BATTENERGY ###
+#### This function called battenergy, will compute the total electrical energy consumed
+#### from the rover battery pack over a simulation profile, defined as time-velocity pairs.
+
+### This function assumes all six motors are driven from the same battery pack.
+
 from scipy.interpolate import interp1d
 from scipy import integrate
 
@@ -509,17 +514,15 @@ def battenergy(t, v, rover):
     # MAIN CODE
    
     P = mechpower(v, rover)
+    w = motorW(v, rover)
     motor = rover["wheel_assembly"]["motor"]
     tau = tau_dcmotor(w, motor)
-    
     # To calculate efficiency values not listed in the rover dictionary
     effcy_fun = interp1d(motor["effcy_tau"], motor["effcy"], kind = "cubic")
     effcy = effcy_fun(tau)
-    
     # Calculate the power consumed by the battery at time t is the motor power output
     # divided by the efficiency at the motor operating point
     P_batt = P/effcy
-    
     # To determine the total energy consumed by the battery, take the integral of P_batt
     E = 6*integrate.simps(P_batt, t) # multiplied by 6 because there are 6 wheels
     
