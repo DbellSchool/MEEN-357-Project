@@ -449,7 +449,8 @@ def mechpower(v, rover):
     
     #call angular velocity and tau
     w = motorW(v, rover)
-    tau = tau_dcmotor(w, rover)
+    motor = rover["wheel_assembly"]["motor"]
+    tau = tau_dcmotor(w, motor)
     
     #compute mechpower = w*tau
     P = []
