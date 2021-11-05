@@ -349,34 +349,48 @@ def end_of_mission_event(end_event):
 
 def motorW(omega, rover):
     #Compute the rotational speed of the motor shaft [rad/s]
-    #given the translational velocity of the rover and the roverdictionary.
-    #This function is “vectorized” such that it returns a vector the same size containing the corresponding motor speeds. 
-
+    # given the translational velocity of the rover and the roverdictionary.
+    # 
+    #This function should be “vectorized” such that if given a vector of rover velocities
+    # it returns a vector the same size containing the corresponding motor speeds. 
+    #print(type(omega))
     if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)) and (not isinstance(omega, np.float64)):
         raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
     if not isinstance(omega, np.ndarray):
         omega = np.array([omega],dtype=float) # make the scalar a numpy array
     elif len(np.shape(omega)) != 1:
         raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
+    
     if type(rover) != dict:
         raise Exception('Third input must be a dict')
     omega_nl = rover['wheel_assembly']['motor']['speed_noload']
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
 
-    r_wheel = rover['wheel_assembly']['wheel']['radius'] # r in meters
+    r_wheel = rover['wheel_assembly']['wheel']['radius'] # raius in meters
     
     w = np.zeros(len(omega),dtype = float)
     for ii in range(len(omega)):
         if omega[ii]/r_wheel *Ng >= 0 and omega[ii] <= omega_nl:  # compares maximum no load motor conidion to given motor condition
-            w[ii] = omega[ii]/r_wheel *Ng # Converts to angualr vel and multiples b gear ratio to omega of wheel
-            
+            w[ii] = omega[ii]/r_wheel *Ng
+            # is this math right? 
 
         elif omega[ii] < 0: # ensures givn v is positive
             raise Exception('given v should be positive')
         elif omega[ii]/r_wheel *Ng > omega_nl: # sets v to 0 if it is too large
             w[ii] = 0
-           
+            # Is this an ok interprestaiton ^
     return w
+    
+
+def alpha_fun(y):
+    experiment = experiment1()[0]
+    alpha_dist = experiment['alpha_dist']
+    alpha_deg = experiment['alpha_deg']
+    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value= "extrapolate") # fit the cubic spline
+
+    return alpha_fun 
+
+
 
 def rover_dynamics(t, y, rover, planet, experiment):
     # if not isinstance(omega, np.ndarray):
@@ -390,8 +404,6 @@ def rover_dynamics(t, y, rover, planet, experiment):
     #if (> y[0] or end_of_mission_event(end_event)>y[1]):
     #print(end_of_mission_event(end_event))
     #print(y[0],y[1],"|") #end_of_mission_event(end_event)[1])
-    
-    
     #ASK PROFESSOR
     # if (type(t) != isinstance(t,float) and not(isinstance(t,np.float64)) and not(0.0)):
     #     #raise Exception('First input must be a scalar')
@@ -456,9 +468,8 @@ def mechpower(v, rover):
     return np.array(P)
 
 ### BATTENERGY ###
-#### This function called battenergy, will compute the total electrical energy consumed
-#### from the rover battery pack over a simulation profile, defined as time-velocity pairs.
-
+#### This function called battenergy, will compute the total electrical energy consumed...
+#### ...from the rover battery pack over a simulation profile, defined as time-velocity pairs.
 ### This function assumes all six motors are driven from the same battery pack.
 
 from scipy.interpolate import interp1d
@@ -472,6 +483,7 @@ def battenergy(t, v, rover):
              
     Outputs:     E:  scalar               Total electrical energy consumed from the rover battery pack
                                           over the input simulation profile. [J]
+        
     """
     #check that the first input is a numpy array
     if (type(t) != int) and (type(t) != float) and (not isinstance(t, np.ndarray)):
@@ -490,7 +502,6 @@ def battenergy(t, v, rover):
         raise Exception('Second input must be a scalar or a vector. Matrices are not allowed.')
         
     # check that the first two inputs are equal-length vectors
-    # MAY NOT BE RIGHT WAY TO SAY THIS (could try if both do not equal 1, then raise exception)
     if len(np.shape(t)) != len(np.shape(v)):
         raise Exception("The first two inputs must be equal-length vectors of numerical values")
         
@@ -498,7 +509,7 @@ def battenergy(t, v, rover):
     if type(rover) != dict:
         raise Exception("Third input must be a dictionary")
         
-    # MAIN CODE
+    # MAIN CODE (for battenergy)
    
     P = mechpower(v, rover)
     w = motorW(v, rover)
@@ -507,10 +518,10 @@ def battenergy(t, v, rover):
     # To calculate efficiency values not listed in the rover dictionary
     effcy_fun = interp1d(motor["effcy_tau"], motor["effcy"], kind = "cubic")
     effcy = effcy_fun(tau)
-    # Calculate the power consumed by the battery at time t is the motor power output
-    # divided by the efficiency at the motor operating point
+    # Calculate the power consumed by the battery at time t is the motor power output...
+    # ...divided by the efficiency at the motor operating point
     P_batt = P/effcy
-    # To determine the total energy consumed by the battery, take the integral of P_batt
+    # To determine the total energy consumed by the battery, take the integral (using Simpson's Rule) of P_batt
     E = 6*integrate.simps(P_batt, t) # multiplied by 6 because there are 6 wheels
     
     return E
@@ -558,14 +569,12 @@ def simulate_rover(rover,planet,experiment,end_event):
 #######################
 # Test Rover Dynamics #
 #######################
-'''
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
 from define_experiment import experiment1
 from end_of_mission_event import end_of_mission_event
 import numpy as np
-
 #from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
 
 #def rover_dynamics(t,y,rover,planet,experiment, end_event):
@@ -597,8 +606,7 @@ end_event = experiment1()[1]
 events = end_of_mission_event(end_event)
 
 
-sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events
-'''
+sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
 #print(sol)
 
 
