@@ -349,36 +349,33 @@ def end_of_mission_event(end_event):
 
 def motorW(omega, rover):
     #Compute the rotational speed of the motor shaft [rad/s]
-    # given the translational velocity of the rover and the roverdictionary.
-    # 
-    #This function should be “vectorized” such that if given a vector of rover velocities
-    # it returns a vector the same size containing the corresponding motor speeds. 
-    #print(type(omega))
+    #given the translational velocity of the rover and the roverdictionary.
+    #This function is “vectorized” such that it returns a vector the same size containing the corresponding motor speeds. 
+
     if (type(omega) != int) and (type(omega) != float) and (not isinstance(omega, np.ndarray)) and (not isinstance(omega, np.float64)):
         raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
     if not isinstance(omega, np.ndarray):
         omega = np.array([omega],dtype=float) # make the scalar a numpy array
     elif len(np.shape(omega)) != 1:
         raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
-    
     if type(rover) != dict:
         raise Exception('Third input must be a dict')
     omega_nl = rover['wheel_assembly']['motor']['speed_noload']
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
 
-    r_wheel = rover['wheel_assembly']['wheel']['radius'] # raius in meters
+    r_wheel = rover['wheel_assembly']['wheel']['radius'] # r in meters
     
     w = np.zeros(len(omega),dtype = float)
     for ii in range(len(omega)):
         if omega[ii]/r_wheel *Ng >= 0 and omega[ii] <= omega_nl:  # compares maximum no load motor conidion to given motor condition
-            w[ii] = omega[ii]/r_wheel *Ng
-            # is this math right? 
+            w[ii] = omega[ii]/r_wheel *Ng # Converts to angualr vel and multiples b gear ratio to omega of wheel
+            
 
         elif omega[ii] < 0: # ensures givn v is positive
             raise Exception('given v should be positive')
         elif omega[ii]/r_wheel *Ng > omega_nl: # sets v to 0 if it is too large
             w[ii] = 0
-            # Is this an ok interprestaiton ^
+           
     return w
 
 def rover_dynamics(t, y, rover, planet, experiment):
