@@ -400,76 +400,66 @@ def alpha_fun(y):
 
 
 
-def rover_dynamics(t, y, rover, planet, experiment):
-    # if not isinstance(omega, np.ndarray):
-    #     omega = np.array([omega],dtype=float) # make the scalar a numpy array
-    # elif len(np.shape(omega)) != 1:
-    #     raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
-    #print(type(t)) 
-    #print(len(t))
-    #print("this is a numpy floatS",not(isinstance(t,np.float64)))
+def rover_dynamics(t, y, rover, planet, experiment):  
     
-    #if (> y[0] or end_of_mission_event(end_event)>y[1]):
-    #print(end_of_mission_event(end_event))
-    #print(y[0],y[1],"|") #end_of_mission_event(end_event)[1])
-    #ASK PROFESSOR
-    # if (type(t) != isinstance(t,float) and not(isinstance(t,np.float64)) and not(0.0)):
-    #     #raise Exception('First input must be a scalar')
-    #     print("\n\nit not a float", type(t),t)
-   
-    
-   
+    # Check that the second input is a scalar or a vector
     if not isinstance(y, np.ndarray):
         y= np.array([y],dtype=float) # make the scalar a numpy array
     elif len(np.shape(y)) != 1:
         raise Exception('Second input must be a scalar or a vector. Matrices are not allowed.')
-        
+     # Check that the third input is a dict   
     if type(rover) != dict:
         raise Exception('Third input must be a dict')
-        
+     # Check that the fourth input is a dict   
     if type(planet) != dict:
         raise Exception('Fourth input must be a dict')
-        
+    # Check that the fifth input is a dict    
     if type(experiment) != dict:
         raise Exception('Fifth input mustt be a dict')
-
+    
+    #Interpolate for terrain angles
     
     alpha_dist = experiment['alpha_dist']
     alpha_deg = experiment['alpha_deg']
-    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic') # fit the cubic spline
+    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic') # fit the cubic splin
     terrain_angle = alpha_fun(y[1])
     terrain_angle = terrain_angle.tolist()
     
-    w = motorW(y[0],rover) #y[0] is velocity, dx/dt
+    #Call values for F_net
+    Crr = experiment['Crr']
+    w = motorW(float(y[0]),rover) #y[0] is velocity, dx/dt
     Fnet = F_net(w, terrain_angle, rover, planet, Crr)
     m = get_mass(rover)
     
-    dy1dt = y[0] #y[0] is velocity dy/dx
+    #create differential equations for IVP solver
+    dy1dt = float(y[0]) #y[0] is velocity dy/dx
     dy2dt = Fnet / m
-    dydt = np.array([dy2dt, dy1dt], dtype=object)
+    dydt = np.array([dy2dt, dy1dt], dtype=float)
     return dydt
 
 
 def mechpower(v, rover):
-    if type(rover) != dict:
-        raise Exception('Second input must be a dict')
-    if (type(v) != int) and (type(v) != float) and (not isinstance(v, np.ndarray)):
-        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
     
+    # Check that the first input is a dict 
+    if type(rover) != dict:
+        raise Exception('First input must be a dict')
+    # Check that the second input is a scalar or a vector
+    if (type(v) != int) and (type(v) != float) and (not isinstance(v, np.ndarray)):
+        raise Exception('Second input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    
+    #call angular velocity and tau
     w = motorW(v, rover)
-    motor  = rover['wheel_assembly']['motor']
-    tau = tau_dcmotor(w, motor)
-    #compute power = w*tau
+    tau = tau_dcmotor(w, rover)
+    
+    #compute mechpower = w*tau
     P = []
     if len(w) != 1:
         for i in range(len(w)):
             Pwr = np.array(w[i]*tau[i])
-            #print('POWER=', Pwr)
             P.append(Pwr) 
         else:
             P = w*tau
             
-    #print('P=',P) 
     return np.array(P)
 
 ### BATTENERGY ###
