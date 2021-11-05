@@ -380,17 +380,6 @@ def motorW(omega, rover):
             w[ii] = 0
             # Is this an ok interprestaiton ^
     return w
-    
-
-def alpha_fun(y):
-    experiment = experiment1()[0]
-    alpha_dist = experiment['alpha_dist']
-    alpha_deg = experiment['alpha_deg']
-    alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value= "extrapolate") # fit the cubic spline
-
-    return alpha_fun 
-
-
 
 def rover_dynamics(t, y, rover, planet, experiment):
     # if not isinstance(omega, np.ndarray):
@@ -404,6 +393,8 @@ def rover_dynamics(t, y, rover, planet, experiment):
     #if (> y[0] or end_of_mission_event(end_event)>y[1]):
     #print(end_of_mission_event(end_event))
     #print(y[0],y[1],"|") #end_of_mission_event(end_event)[1])
+    
+    
     #ASK PROFESSOR
     # if (type(t) != isinstance(t,float) and not(isinstance(t,np.float64)) and not(0.0)):
     #     #raise Exception('First input must be a scalar')
@@ -484,7 +475,6 @@ def battenergy(t, v, rover):
              
     Outputs:     E:  scalar               Total electrical energy consumed from the rover battery pack
                                           over the input simulation profile. [J]
-        
     """
     #check that the first input is a numpy array
     if (type(t) != int) and (type(t) != float) and (not isinstance(t, np.ndarray)):
@@ -571,12 +561,14 @@ def simulate_rover(rover,planet,experiment,end_event):
 #######################
 # Test Rover Dynamics #
 #######################
+'''
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
 from define_experiment import experiment1
 from end_of_mission_event import end_of_mission_event
 import numpy as np
+
 #from Project_Phase_1_Codes.subfunctions import get_mass(), F_net(), motorW()
 
 #def rover_dynamics(t,y,rover,planet,experiment, end_event):
@@ -608,7 +600,8 @@ end_event = experiment1()[1]
 events = end_of_mission_event(end_event)
 
 
-sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
+sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events
+'''
 #print(sol)
 
 
