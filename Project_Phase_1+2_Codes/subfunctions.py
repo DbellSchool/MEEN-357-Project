@@ -11,6 +11,8 @@ from numpy.core.defchararray import array
 from define_experiment import experiment1 
 from  scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
+from scipy.interpolate import interp1d
+from scipy import integrate
 
 def get_mass(rover):    
 # Check that the input is a dict
@@ -348,6 +350,12 @@ def end_of_mission_event(end_event):
     return events
 
 def motorW(omega, rover):
+    """
+    Inputs:               v:  list     Motor shaft speed [rad/s]
+                      rover:  dict     Data structure specifying rover 
+                                       parameters    
+    Outputs:              w:  list     Motor speed [rad/s].
+    """
     #Compute the rotational speed of the motor shaft [rad/s]
     # given the translational velocity of the rover and the roverdictionary.
     # 
@@ -425,9 +433,6 @@ def rover_dynamics(t, y, rover, planet, experiment):
     if type(experiment) != dict:
         raise Exception('Fifth input mustt be a dict')
 
-        
- 
-        
     
     alpha_dist = experiment['alpha_dist']
     alpha_deg = experiment['alpha_deg']
@@ -471,9 +476,6 @@ def mechpower(v, rover):
 #### This function called battenergy, will compute the total electrical energy consumed...
 #### ...from the rover battery pack over a simulation profile, defined as time-velocity pairs.
 ### This function assumes all six motors are driven from the same battery pack.
-
-from scipy.interpolate import interp1d
-from scipy import integrate
 
 def battenergy(t, v, rover):
     """ 
@@ -529,7 +531,19 @@ def battenergy(t, v, rover):
 
 
 def simulate_rover(rover,planet,experiment,end_event):
-
+    """ 
+    Inputs:      rover:  dict                 Data structure containing the parameters of the rover
+                planet:  dict                 Data structure containing the planet definition
+            experiment:  dict                 Data structure containing parameters of the trajectory to be followed by the
+                                              rover
+             end_event:  dict                 Data structure containing the conditions necessary and sufficient to terminate
+                                              simulation of rover dynamics
+          
+             
+    Outputs:     rover:  dict                 Data structure containing the parameters of the rover, including updated
+                                              telemetry information.
+        
+    """
 
     #### Check if all inputs are dic
     if type(rover) != dict:
@@ -569,6 +583,7 @@ def simulate_rover(rover,planet,experiment,end_event):
 #######################
 # Test Rover Dynamics #
 #######################
+'''
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from define_rovers import define_rover_4
@@ -608,7 +623,7 @@ events = end_of_mission_event(end_event)
 
 sol = solve_ivp(fun, tspan, y0, method= 'RK45', events=events)
 #print(sol)
-
+'''
 
 ###################
 #Test For RoverSIM#
