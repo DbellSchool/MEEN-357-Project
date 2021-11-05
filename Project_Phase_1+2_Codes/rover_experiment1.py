@@ -46,12 +46,8 @@ plt.ylabel('Motor Power [W]')
 plt.show()
 
 
-# preforms leftanded reiman sum for andwin queoisnt in part 8
-j = 0 
-for i in range (len(t)-1):
-    j = j +(t[i+1]-t[i])*p[i]
-print('total jules used = ',j)
-
+#gets battery energy
+j = sb.battenergy(t, v, rover)
 
 print("Final Table:\n")
 print("completion_time:",t[-1]) # last index
@@ -60,3 +56,8 @@ print( "max_velocity:",max(v))
 print( "average_velocity:",sum(v)/len(v))
 print("battery_energy:",j)
 print("batt_energy_per_distance:",j/(x[-1]-x[0]))
+
+
+
+
+print("\n\nBattenergy = ", j)
