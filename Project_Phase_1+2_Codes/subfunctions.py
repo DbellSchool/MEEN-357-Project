@@ -467,6 +467,64 @@ def mechpower(v, rover):
     #print('P=',P) 
     return np.array(P)
 
+### BATTENERGY ###
+from scipy.interpolate import interp1d
+from scipy import integrate
+
+def battenergy(t, v, rover):
+    """ 
+    Inputs:      t:  1D numpy array       N-element array of time samples from a rover simulation [s]
+                 v:  1D numpy array       N-element array of rover velocity data from a simulation [m/s]
+             rover:  dict                 Data structure containing rover definition
+             
+    Outputs:     E:  scalar               Total electrical energy consumed from the rover battery pack
+                                          over the input simulation profile. [J]
+        
+    """
+    #check that the first input is a numpy array
+    if (type(t) != int) and (type(t) != float) and (not isinstance(t, np.ndarray)):
+        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    elif not isinstance(t, np.ndarray):
+        t = np.array([t],dtype=float) # make the scalar a numpy array
+    elif len(np.shape(t)) != 1:
+        raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
+        
+        #check that second input is a numpy array
+        if (type(v) != int) and (type(v) != float) and (not isinstance(v, np.ndarray)):
+            raise Exception('Second input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
+    elif not isinstance(v, np.ndarray):
+        v = np.array([v],dtype=float) # make the scalar a numpy array
+    elif len(np.shape(v)) != 1:
+        raise Exception('Second input must be a scalar or a vector. Matrices are not allowed.')
+        
+    # check that the first two inputs are equal-length vectors
+    # MAY NOT BE RIGHT WAY TO SAY THIS (could try if both do not equal 1, then raise exception)
+    if len(np.shape(t)) != len(np.shape(v)):
+        raise Exception("The first two inputs must be equal-length vectors of numerical values")
+        
+    # check that the third input is a dictionary
+    if type(rover) != dict:
+        raise Exception("Third input must be a dictionary")
+        
+    # MAIN CODE
+   
+    P = mechpower(v, rover)
+    motor = rover["wheel_assembly"]["motor"]
+    tau = tau_dcmotor(w, motor)
+    
+    # To calculate efficiency values not listed in the rover dictionary
+    effcy_fun = interp1d(motor["effcy_tau"], motor["effcy"], kind = "cubic")
+    effcy = effcy_fun(tau)
+    
+    # Calculate the power consumed by the battery at time t is the motor power output
+    # divided by the efficiency at the motor operating point
+    P_batt = P/effcy
+    
+    # To determine the total energy consumed by the battery, take the integral of P_batt
+    E = 6*integrate.simps(P_batt, t) # multiplied by 6 because there are 6 wheels
+    
+    return E
+
 
 
 def simulate_rover(rover,planet,experiment,end_event):
