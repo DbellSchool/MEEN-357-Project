@@ -55,9 +55,6 @@ for i in range(len(D_vals)):
     else :
         Success[i] = 0 
 
-    ### 1 
-    ############################
-
 
 
 

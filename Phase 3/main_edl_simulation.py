@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from define_edl_system import *
 from subfunctions_EDL import *
 from define_planet import *
-#from define_mission_events import *
+from define_mission_events import *
 
 # *************************************
 # load dicts that define the EDL system (includes rover), planet,
