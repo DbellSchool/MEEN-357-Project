@@ -452,7 +452,7 @@ def edl_dynamics(t, y, edl_system, planet):
     
     
     # Forces EXCEPT THRUST acting on EDL System
-    F_ext = F_gravity_descent(edl_system,planet) + F_buoyancy_descent(edl_system,planet,altitude_edl)+ F_drag_descent(edl_system,planet,altitude_edl,vel_edl)
+    F_ext = F_gravity_descent(edl_system,planet) + F_buoyancy_descent(edl_system,planet,altitude_edl)+ F_drag_descent_mod(edl_system,planet,altitude_edl,vel_edl)
 
     # Remove comment if you want some extra debugging display
     #print('\n')  
