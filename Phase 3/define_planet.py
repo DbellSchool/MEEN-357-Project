@@ -9,7 +9,7 @@ import numpy as np
 
 def define_planet():
 
-    high_altitude = {'temperature' : , # [C]lambda altitude: -23.4 - 0.00222*altitude
+    high_altitude = {'temperature' : lambda altitude: -23.4 - 0.00222*altitude, # [C]
                      'pressure' : lambda altitude: 0.699*np.exp(-0.00009*altitude)} # [KPa]
                                                                 
     low_altitude = {'temperature' : lambda altitude: -31 - 0.000998*altitude, # [C]

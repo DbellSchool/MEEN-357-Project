@@ -8,12 +8,12 @@
 #   Last Modified: 22 October 2021
 ###########################################################################"""
 
-import numpy as np
+#import numpy as np
 import matplotlib.pyplot as plt
 from define_edl_system import *
 from subfunctions_EDL import *
 from define_planet import *
-from define_mission_events import *
+#from define_mission_events import *
 
 # *************************************
 # load dicts that define the EDL system (includes rover), planet,
@@ -75,4 +75,5 @@ axs2[0].grid()
 axs2[1].plot(t,sky_crane_hover_pos)
 axs2[1].set_title('position of sky crane vs. time')
 axs2[1].grid()
+plt.show()
 
