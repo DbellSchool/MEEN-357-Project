@@ -36,12 +36,12 @@ tmax = 2000   # [s] maximum simulated time
 
 # the simulation. changing last argument to false turns off message echo
 [t, Y, edl_system] = simulate_edl(edl_system, mars, mission_events, tmax, True)
+print(type(t))
 
+print(type(edl_system))
 # visualize the simulation results
 plot1 = plt.figure(0)
-fig, axs = plt.subplots(7,1) 
-plot1.tight_layout(pad=10.0)
-
+fig, axs = plt.subplots(7) 
 axs[0].plot(t, Y[0, :])
 axs[0].set_title('velocity vs. time')
 axs[0].grid()
@@ -79,4 +79,3 @@ axs2[1].set_title('position of sky crane vs. time')
 axs2[1].grid()
 
 plt.show()
-
