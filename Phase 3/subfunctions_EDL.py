@@ -82,42 +82,132 @@ def F_buoyancy_descent(edl_system,planet,altitude):
     
     return F
 
-def F_drag_descent(edl_system,planet,altitude,velocity):
-    
-    # Compute the net drag force. 
-    
-    
+
+def F_drag_descent(edl_system,planet,altitude,velocity):   
+
+    # Compute the net drag force.
+
     # compute the density of planetary atmosphere at current altitude
+
     density, _, _ = get_local_atm_properties(planet, altitude)
-    
+
+
     # This is the (1/2)*density*velocity^2 part of the drag model. The missing
     # bit is area*Cd, which we'll figure out below.
+
     rhov2=0.5*density*velocity**2
-    
-    
+
+
     # *************************************
-    # Determine which part(s) of the EDL system are contributing to drag
-    
+
+    # Determine which part(s) of the EDL system are contributing to drag   
+
     # If the heat shield has not been ejected, use that as our drag
     # contributor. Otherwise, use the sky crane.
-    if not edl_system['heat_shield']['ejected']:
-        ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*edl_system['heat_shield']['Cd']
-    else:
-        ACd_body = edl_system['sky_crane']['area']*edl_system['sky_crane']['Cd']
 
-    
+    if not edl_system['heat_shield']['ejected']:
+
+        ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*edl_system['heat_shield']['Cd']
+
+    else:
+
+        ACd_body = edl_system['sky_crane']['area']*edl_system['sky_crane']['Cd']
+  
+
     # if the parachute is in the deployed state, need to account for its area
     # in the drag calculation
+
     if edl_system['parachute']['deployed'] and not edl_system['parachute']['ejected']:
+
         ACd_parachute = np.pi*(edl_system['parachute']['diameter']/2.0)**2*edl_system['parachute']['Cd']
+
     else:
+
         ACd_parachute = 0.0
-    
-    
+
+
     # This computes the ultimate drag force
+
     F=rhov2*(ACd_body+ACd_parachute)
-    
+  
+
     return F
+
+
+#modified f_drag_descent code
+
+def F_drag_descent_mod(edl_system,planet,altitude,velocity): 
+
+    # Compute the net drag force.
+ 
+
+    # compute the density of planetary atmosphere at current altitude
+
+    density, _, _ = get_local_atm_properties(planet, altitude)
+
+   
+
+    # This is the (1/2)*density*velocity^2 part of the drag model. The missing
+    # bit is area*Cd, which we'll figure out below.
+
+    rhov2=0.5*density*velocity**2
+    
+
+    # *************************************
+
+    # Determine which part(s) of the EDL system are contributing to drag
+
+
+    # If the heat shield has not been ejected, use that as our drag
+    # contributor. Otherwise, use the sky crane.
+
+    if not edl_system['heat_shield']['ejected']:
+
+        ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*edl_system['heat_shield']['Cd']
+
+    else:
+
+        ACd_body = edl_system['sky_crane']['area']*edl_system['sky_crane']['Cd']
+
+ 
+
+    Mach = [0.25   ,0.5  ,0.65  ,0.7  ,0.8 , 0.9  ,0.95  ,1.0  ,1.1  ,1.2  ,1.3  ,1.4 ,1.5   ,1.6  ,1.8   ,1.9  ,2.0  ,2.2   ,2.5, 2.6]
+    MEF = [1.0, 1.0, 1.0, 0.98, 0.90, 0.72, 0.66, 0.76, 0.90, 0.96, 0.990, 0.999, 0.992, 0.98, 0.90, 0.85, 0.82, 0.75, 0.65, 0.62]
+    
+    #converting velocity to Mach number
+    M = v2M_Mars(velocity, altitude)
+    
+    #interpolating given mach vs MEF chart
+    intpld_mach_MEF = interp1d(Mach, MEF, kind='cubic', fill_value='extrapolate')
+    
+    #finding MEF using interpolate function and converted mach
+    found_MEF = intpld_mach_MEF(M)
+    
+    #Computing new Cd with MEF and mach
+    Cd_mod = found_MEF * edl_system['parachute']['Cd']
+        
+
+    # if the parachute is in the deployed state, need to account for its area
+    # in the drag calculation
+
+    if edl_system['parachute']['deployed'] and not edl_system['parachute']['ejected']:
+            
+        #using modified Cd in ACd_parachute equaiton
+        ACd_parachute_mod = np.pi*(edl_system['parachute']['diameter']/2.0)**2*Cd_mod
+
+    else:
+
+        ACd_parachute_mod = 0.0
+    
+
+    # This computes the ultimate drag force with modified ACd_parachute
+
+    F=rhov2*(ACd_body+ACd_parachute_mod)
+
+   
+
+    return F
+
 
 def F_gravity_descent(edl_system,planet):
     
@@ -741,7 +831,7 @@ def update_edl_state(edl_system, TE, YE, Y, ITER_INFO):
 
 def simulate_edl(edl_system, planet, mission_events, tmax, ITER_INFO):
     # simulate_edl
-    #
+    #iter info = true or false: true shows the messages, false wont show the message
     # This simulates the EDL system. It requires a definition of the
     # edl_system, the planet, the mission events, a maximum simulation time and
     # has an optional flag to display detailed iteration information.
@@ -807,6 +897,9 @@ def simulate_edl(edl_system, planet, mission_events, tmax, ITER_INFO):
             TERMINATE_SIM = True
     
     return T, Y, edl_system
+    
+    
+        
     
     
         
