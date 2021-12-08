@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Nov 15 22:58:03 2021
+Created on Mon Nov 12 2021
 
 @author: Marvin Engineering Design Team
+Edidid: Group 14
 """
 import pandas as pd
 import numpy as np
@@ -15,29 +16,19 @@ from scipy.optimize import NonlinearConstraint
 import pickle
 import sys
 
-
-
-def optomize():
+def optomize(x0,MET,MOT,BAT,BNUM):
     # the following calls instantiate the needed structs and also make some of
     # our design selections (battery type, etc.)
+
+
     planet = define_planet()
     edl_system = define_edl_system()
     mission_events = define_mission_events()
 
-    # change
-
-    metal = ['steel',"magnesium","carbon"]
-    Moter = ['base',"base_he","torque","torque_he","speed","speed_he"]
-    Batt  = ["LiFePO4","NiMH","NiCD" "PbAcid-1" "PbAcid-2", "PbAcid-3"]
-
-    Metal = [0]
-    MOTER = [0]
-    BAtt  = [0]
-    battnum = 12
-
-    edl_system = define_chassis(edl_system,Metal)
-    edl_system = define_motor(edl_system,MOTER)
-    edl_system = define_batt_pack(edl_system,BAtt, battnum)
+    #,Batt,MOTER,battnum
+    edl_system = define_chassis(edl_system,str(MET))
+    edl_system = define_motor(edl_system,str(MOT))
+    edl_system = define_batt_pack(edl_system,str(BAT), BNUM)
     tmax = 5000
 
     # Overrides what might be in the loaded data to establish our desired
@@ -49,7 +40,6 @@ def optomize():
     edl_system['rover']['on_ground'] = False # the rover has not yet landed
 
     experiment, end_event = experiment1()
-    #experiment2, end_event2 = experiment2()
 
     # constraints
     max_rover_velocity = -1  # this is during the landing phase
@@ -72,20 +62,9 @@ def optomize():
     # search bounds
     #x_lb = np.array([14, 0.2, 250, 0.05, 100])
     #x_ub = np.array([19, 0.7, 800, 0.12, 290])
-    bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290]) # , Ful mass
+    bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
-    # initial guess
-    #print(edl_system)
-    print(edl_system['rover']['chassis']['type'])
-
-    # parachute_diameter 
-    # Wheel_Radius 
-    # Chassis_mass 
-    # Gear_Diameter 
-    # Fuel_Mass 
-
-    x0 = np.array([19, .5, 550.0, 0.09, 250.0]) 
-
+    
 
     # lambda for the objective function
     obj_f = lambda x: obj_fun_time(x,edl_system,planet,mission_events,tmax,
@@ -130,7 +109,6 @@ def optomize():
                 'disp' : True}
     res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constraint, 
                     options=options, bounds=bounds)
-    opt = 1
     # end call to the trust-constr optimizer -------------------------------------#
     ###############################################################################
 
@@ -140,14 +118,12 @@ def optomize():
     #             'disp' : True}
     # res = minimize(obj_f, x0, method='SLSQP', constraints=ineq_cons, bounds=bounds, 
     #                 options=options, callback=callbackF)
-    # opt= 2
     # end call to the SLSQP optimizer --------------------------------------------#
     ###############################################################################
 
     ###############################################################################
     # call the COBYLA optimizer --------------------------------------------------#
     # cobyla_bounds = [[14, 19], [0.2, 0.7], [250, 800], [0.05, 0.12], [100, 290]]
-    # opt = 3
     # #construct the bounds in the form of constraints
     # cons_cobyla = []
     # for factor in range(len(cobyla_bounds)):
@@ -172,17 +148,17 @@ def optomize():
                             max_batt_energy_per_meter)
 
     feasible = np.max(c - np.zeros(len(c))) <= 0
-
-
     if feasible:
         xbest = res.x
         fbest = res.fun
-
     else:  # nonsense to let us know this did not work
         xbest = [99999, 99999, 99999, 99999, 99999]
         fval = [99999]
-        raise Exception('Solution not feasible, exiting code...')
-        sys.exit()
+        print("SYSTEM : Solution not feasible, exiting code...") 
+
+        return
+        #raise Exception('Solution not feasible, exiting code...')
+        #sys.exit()
         
     # The following will rerun your best design and present useful information
     # about the performance of the design
@@ -200,7 +176,7 @@ def optomize():
     # These lines save your design for submission for the rover competition.
     # You will want to change them to match your team information.
 
-    edl_system['team_name'] = 'Manhaon'  # change this to something fun for your team (or just your team number)
+    edl_system['team_name'] = 'TEAM FAIL'  # change this to something fun for your team (or just your team number)
     edl_system['team_number'] = 14    # change this to your assigned team number
 
     # This will create a file that you can submit as your competition file.
@@ -240,12 +216,21 @@ def optomize():
     print('----------------------------------------')
     print('----------------------------------------')
 
-    df = pd.read_excel('Records.xlsx', sheet_name = 0, header = 0)
-    print(df.head() )
-    blank_row_bool = df.iloc[:,1].isna()
+
+    ## Print STUFF
+    df = pd.read_excel('Records.xlsx')
+    #print(df.head() )
+    #blank_row_bool = df.iloc[:,1].isna()
     #print(blank_row_bool)
     opt = 1
-    data = [[opt,Metal,MOTER,BAtt,battnum,xbest[0],xbest[1],xbest[2],xbest[3],xbest[4], total_time,edl_system_total_cost]]
+    
+    data = [[1,2,3,4,5,6,7,7,8,7,6,5]]
+    colname = ["Optimization","Chassis Type","Motor Type",	"Battery Type",	"# of Battery",	"Parachute diam",	"Wheel Radius",	"Chassis mass",	"Gear Diameter",	"Fuel Mass",	"Overall time",	"Cost"]
+    #print()
+
+
+    
+    data = [[opt,MET,MOT,BAT,BNUM,xbest[0],xbest[1],xbest[2],xbest[3],xbest[4], total_time,edl_system_total_cost]]
     colname = ["Optimization","Chassis Type","Motor Type",	"Battery Type",	"# of Battery",	"Parachute diam",	"Wheel Radius",	"Chassis mass",	"Gear Diameter",	"Fuel Mass",	"Overall time",	"Cost"]
 
 
@@ -254,28 +239,31 @@ def optomize():
     print(len(data))
     print(D)
 
-    D.to_excel("Records.xlsx",sheet_name='2')  
+    D.to_excel("Records.xlsx")  
 
     print(df)
 
     return
-optomize()
-# df = pd.read_excel('Records.xlsx', sheet_name = 0, header = 0)
-# head = df.head()
-# blank_row_bool = df.iloc[:,1].isna()
-# #print(blank_row_bool)
-# opt = 1
 
-# opt = 1
+# initial guess
 
-# data =[[1,9,2,2,2,2,2,2,1,3,5,6] ]
-# colname = ["Optimization","Chassis Type","Motor Type",	"Battery Type",	"# of Battery",	"Parachute diam",	"Wheel Radius",	"Chassis mass",	"Gear Diameter",	"Fuel Mass",	"Overall time",	"Cost"]
-# df2 = pd.DataFrame(data, columns=colname)
-# D = df.append(df2)
-# print(len(data))
-# print(D)
+met = ['steel',"magnesium","carbon"]
+Mot = ['base',"base_he","torque","torque_he","speed","speed_he"]
+Bat  = ["LiFePO4","NiMH","NiCD" "PbAcid-1" "PbAcid-2", "PbAcid-3"]
 
-# D.to_excel("Records.xlsx",sheet_name='2')  
+MET = met[0]
+MOT = Mot[0]
+BAT  = Bat[0]
+BNUM = 12
+edl_system = define_edl_system()
+
+for i in np.arange(18,19,0.5):
+    x0 = np.array([i, .5, 550.0, 0.09, 250.0]) 
+#optomize(x0,MET,,'LiFePO4',12)
+#optomize(x0,'steel','base','LiFePO4',12)
+#print(BAT[0])
+    optomize(x0,MET,'base','LiFePO4',12)
+
 
 
 

@@ -7,6 +7,9 @@
 ###########################################################################"""
 
 import numpy as np
+import random as rand
+
+from scipy.sparse.construct import random
 
 def experiment1():
     
@@ -24,3 +27,16 @@ def experiment1():
     
     return experiment, end_event
 
+def experiment2():
+    
+    experiment = {'time_range' : np.array([0,20000]),
+                  'initial_conditions' : np.array([0.3125,0]),
+                  'alpha_dist' : np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]),
+                  'alpha_deg' : np.array( rand.sample(range(-10, 15),11)),
+                  'Crr' : 0.1}
+    
+    end_event = {'max_distance' : 1000,
+                 'max_time' : 5000,
+                 'min_velocity' : 0.01}
+    
+    return experiment, end_event
