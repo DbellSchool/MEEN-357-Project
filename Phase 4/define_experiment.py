@@ -32,7 +32,7 @@ def experiment2():
     experiment = {'time_range' : np.array([0,20000]),
                   'initial_conditions' : np.array([0.3125,0]),
                   'alpha_dist' : np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]),
-                  'alpha_deg' : np.array( rand.sample(range(-10, 15),11)),
+                  'alpha_deg' : np.array(rand.sample(range(-10, 15),11)),
                   'Crr' : 0.1}
     
     end_event = {'max_distance' : 1000,
@@ -40,3 +40,34 @@ def experiment2():
                  'min_velocity' : 0.01}
     
     return experiment, end_event
+
+def experiment3():
+    
+    experiment = {'time_range' : np.array([0,20000]),
+                  'initial_conditions' : np.array([0.3125,0]),
+                  'alpha_dist' : np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]),
+                  'alpha_deg' : np.array( [-8, -6 ,-5 , 3 , 2 ,-7 ,-2 ,14 , 0 , 1 ,10]),
+                  'Crr' : 0.1}
+    
+    end_event = {'max_distance' : 1000,
+                 'max_time' : 5000,
+                 'min_velocity' : 0.01}
+    
+    return experiment, end_event
+
+
+def experiment4():
+    
+    experiment = {'time_range' : np.array([0,20000]),
+                  'initial_conditions' : np.array([0.3125,0]),
+                  'alpha_dist' : np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]),
+                  'alpha_deg' : np.array( [ 7,  2, 13,  8, -2 ,10, -5 , 3,  6,  9, 12]),
+                  'Crr' : 0.1}
+    
+    end_event = {'max_distance' : 1000,
+                 'max_time' : 5000,
+                 'min_velocity' : 0.01}
+    
+    return experiment, end_event
+
+

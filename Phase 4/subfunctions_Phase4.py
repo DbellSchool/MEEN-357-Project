@@ -462,7 +462,7 @@ def define_motor(edl_system, motor_type):
         motor['torque_stall'] = 165
         motor['speed_noload'] = 3.85
         motor['cost'] = 2.8e5
-        motor['effcy'] = motor.effcy*1.15
+        motor['effcy'] = motor["effcy"]*1.15
         motor['effcy_tau'] = motor['effcy_tau']*1.15
         
     elif motor_type.lower() == 'torque'.lower():
@@ -901,7 +901,7 @@ def battenergy(t,v,rover):
     # Determine efficiency for each time/velocity
     effcy_tau = rover['wheel_assembly']['motor']['effcy_tau'].ravel() # change to 1D array
     effcy = rover['wheel_assembly']['motor']['effcy'].ravel()
-    effcy_fun = interp1d(effcy_tau, effcy, kind = 'cubic') # fit the cubic spline
+    effcy_fun = interp1d(effcy_tau, effcy, kind = 'cubic',fill_value= "extrapolate") # fit the cubic spline
     effcy_dat = effcy_fun(tau)
     
     

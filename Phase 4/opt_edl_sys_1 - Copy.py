@@ -243,7 +243,7 @@ def optomize(x0,MET,MOT,BAT,BNUM):
 
     print(df)
 
-    return
+    return xbest[4] # returns time
 
 # initial guess
 
@@ -257,13 +257,19 @@ BAT  = Bat[0]
 BNUM = 12
 edl_system = define_edl_system()
 
-for i in np.arange(18,19,0.5):
-    x0 = np.array([i, .5, 550.0, 0.09, 250.0]) 
-#optomize(x0,MET,,'LiFePO4',12)
-#optomize(x0,'steel','base','LiFePO4',12)
-#print(BAT[0])
-    optomize(x0,MET,'base','LiFePO4',12)
 
+# loops though dffretn parashot diam
+# for i in np.arange(18,19,0.5):
+#     x0 = np.array([i, .5, 550.0, 0.09, 250.0]) 
+#     optomize(x0,MET,'base','LiFePO4',12)
 
+x_lb = np.array([14, 0.2, 250, 0.05, 100])
+x_ub = np.array([19, 0.7, 800, 0.12, 290])
+r = np.linspace(x_lb[2],x_ub[2],3)
 
-
+#for i in range(len(Mot)):
+#    x0 = np.array([18.5, .5, 550.0, 0.09, 250.0]) 
+#    optomize(x0,met[0],Mot[i],Bat[0],12)
+for i in r:
+    x0 = np.array([18.5, i, 550.0, 0.09, 250.0]) 
+    optomize(x0,met[0],Mot[0],Bat[0],12)
