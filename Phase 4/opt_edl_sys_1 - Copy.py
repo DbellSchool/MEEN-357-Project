@@ -16,7 +16,7 @@ from scipy.optimize import NonlinearConstraint
 import pickle
 import sys
 
-def optomize(x0,MET,MOT,BAT,BNUM):
+def optomize(x0,MET,MOT,BAT,BNUM,experiment, end_event ):
     # the following calls instantiate the needed structs and also make some of
     # our design selections (battery type, etc.)
 
@@ -39,7 +39,7 @@ def optomize(x0,MET,MOT,BAT,BNUM):
     edl_system['parachute']['ejected'] = False   # and still attached
     edl_system['rover']['on_ground'] = False # the rover has not yet landed
 
-    experiment, end_event = experiment1()
+    
 
     # constraints
     max_rover_velocity = -1  # this is during the landing phase
@@ -141,7 +141,7 @@ def optomize(x0,MET,MOT,BAT,BNUM):
     # end call to the COBYLA optimizer -------------------------------------------#
     ###############################################################################
 
-
+    
     # check if we have a feasible solution 
     c = constraints_edl_system(res.x,edl_system,planet,mission_events,tmax,experiment,
                             end_event,min_strength,max_rover_velocity,max_cost,
@@ -215,24 +215,13 @@ def optomize(x0,MET,MOT,BAT,BNUM):
     print('Total cost                     = {:.6f} [$]'.format(edl_system_total_cost))
     print('----------------------------------------')
     print('----------------------------------------')
-
+    opt =1 
 
     ## Print STUFF
     df = pd.read_excel('Records.xlsx')
-    #print(df.head() )
-    #blank_row_bool = df.iloc[:,1].isna()
-    #print(blank_row_bool)
-    opt = 1
-    
-    data = [[1,2,3,4,5,6,7,7,8,7,6,5]]
-    colname = ["Optimization","Chassis Type","Motor Type",	"Battery Type",	"# of Battery",	"Parachute diam",	"Wheel Radius",	"Chassis mass",	"Gear Diameter",	"Fuel Mass",	"Overall time",	"Cost"]
-    #print()
 
-
-    
     data = [[opt,MET,MOT,BAT,BNUM,xbest[0],xbest[1],xbest[2],xbest[3],xbest[4], total_time,edl_system_total_cost]]
     colname = ["Optimization","Chassis Type","Motor Type",	"Battery Type",	"# of Battery",	"Parachute diam",	"Wheel Radius",	"Chassis mass",	"Gear Diameter",	"Fuel Mass",	"Overall time",	"Cost"]
-
 
     df2 = pd.DataFrame(data, columns=colname)
     D = df.append(df2)
@@ -254,22 +243,12 @@ Bat  = ["LiFePO4","NiMH","NiCD" "PbAcid-1" "PbAcid-2", "PbAcid-3"]
 MET = met[0]
 MOT = Mot[0]
 BAT  = Bat[0]
-BNUM = 12
+BNUM = 10
 edl_system = define_edl_system()
 
 
 # loops though dffretn parashot diam
-# for i in np.arange(18,19,0.5):
-#     x0 = np.array([i, .5, 550.0, 0.09, 250.0]) 
-#     optomize(x0,MET,'base','LiFePO4',12)
+for i in np.arange(18,19,0.5):
+     x0 = np.array([i, .5, 550.0, 0.09, 250.0]) 
+     optomize(x0,MET,'base','LiFePO4',12)
 
-x_lb = np.array([14, 0.2, 250, 0.05, 100])
-x_ub = np.array([19, 0.7, 800, 0.12, 290])
-r = np.linspace(x_lb[2],x_ub[2],3)
-
-#for i in range(len(Mot)):
-#    x0 = np.array([18.5, .5, 550.0, 0.09, 250.0]) 
-#    optomize(x0,met[0],Mot[i],Bat[0],12)
-for i in r:
-    x0 = np.array([18.5, i, 550.0, 0.09, 250.0]) 
-    optomize(x0,met[0],Mot[0],Bat[0],12)

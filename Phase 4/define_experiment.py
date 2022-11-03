@@ -71,3 +71,4 @@ def experiment4():
     return experiment, end_event
 
 
+print(np.array(rand.sample(range(-45, 45),11)))

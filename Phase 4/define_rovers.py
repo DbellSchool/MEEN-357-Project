@@ -187,3 +187,7 @@ def define_rover_4():
     
     # return everything we need
     return rover, planet #, end_event
+
+n = [14, 0.2, 250, 0.05, 100]
+a = [19, 0.7, 800, 0.12, 290]
+print(str(n)+"-"+str(n))
